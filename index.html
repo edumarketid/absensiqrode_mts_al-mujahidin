@@ -1,0 +1,4693 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Absensi Sekolah</title>
+
+  <!-- Library QR Scanner -->
+  <script src="https://unpkg.com/html5-qrcode"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #f4f4f4;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    }
+
+    h2 {
+      margin-top: 0;
+    }
+
+    h3 {
+      margin-bottom: 10px;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+    textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    button {
+      width: 100%;
+      padding: 13px;
+      margin: 6px 0;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background: #e9e9e9;
+    }
+
+    button:active {
+      transform: scale(0.98);
+    }
+
+    .info {
+      background: #f1f1f1;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+    }
+
+    .hasil {
+      margin-top: 15px;
+      padding: 15px;
+      background: #f1f1f1;
+      border-radius: 8px;
+      min-height: 50px;
+    }
+
+    .menu {
+      margin-bottom: 15px;
+    }
+
+    .login-area {
+      display: block;
+    }
+
+    .scanner-area {
+      display: none;
+    }
+
+    .manual-area {
+      display: none;
+    }
+
+    .tindak-card {
+      background: #fff3cd;
+      padding: 12px;
+      border-radius: 8px;
+      margin: 10px 0;
+      border: 1px solid #ffe69c;
+    }
+
+    .pilihan-siswa {
+      background: #f8f8f8;
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+
+    .pilihan-siswa:hover {
+      background: #eeeeee;
+    }
+
+    .tindak-button {
+      margin-top: 12px;
+    }
+
+    .libur-area {
+      display: none;
+      margin-top: 15px;
+      padding: 15px;
+      background: #fff8e1;
+      border: 1px solid #ffe082;
+      border-radius: 10px;
+    }
+
+    .libur-status {
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 8px;
+      background: #f1f1f1;
+    }
+
+    .libur-status.libur {
+      background: #ffebee;
+      border: 1px solid #ef9a9a;
+    }
+
+    .libur-status.sekolah {
+      background: #e8f5e9;
+      border: 1px solid #a5d6a7;
+    }
+
+    .libur-button {
+      background: #ffcc80;
+    }
+
+    .dashboard-button {
+      background: #1976d2;
+      color: white;
+      font-weight: bold;
+    }
+
+    .dashboard-button:hover {
+      background: #125ca3;
+    }
+
+    .libur-simpan {
+      background: #ef6c00;
+      color: white;
+    }
+
+    .libur-batal {
+      background: #eeeeee;
+    }
+  </style>
+
+
+<style>
+.menu-dashboard-harian {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: 600;
+  cursor: pointer;
+}
+.menu-dashboard-harian:hover {
+  opacity: 0.9;
+}
+
+
+    .dashboard-harian-button {
+      background: #e8f0fe;
+      color: #174ea6;
+      font-weight: 700;
+      border: 1px solid #c6dafc;
+    }
+
+    .dashboard-harian-button:hover {
+      background: #dbe8fd;
+    }
+</style>
+
+
+<style>
+/* =========================================================
+   MODERN LOGIN + HAMBURGER MENU — FINAL
+   ========================================================= */
+
+body{
+  min-height:100vh;
+  padding:14px;
+  background:
+    radial-gradient(circle at 8% 0%,rgba(37,99,235,.12),transparent 27%),
+    radial-gradient(circle at 95% 100%,rgba(14,165,233,.10),transparent 30%),
+    #f3f6fa;
+}
+
+.container{
+  width:min(100%,720px);
+  max-width:720px;
+  margin:14px auto;
+  padding:0;
+  background:#fff;
+  border:1px solid #e4eaf2;
+  border-radius:24px;
+  overflow:hidden;
+  box-shadow:0 22px 65px rgba(15,23,42,.10);
+}
+
+.login-area{
+  min-height:0;
+  height:calc(100dvh - 28px);
+  padding:22px 24px;
+  display:flex !important;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  background:linear-gradient(180deg,#ffffff 0%,#f8fbff 100%);
+}
+
+.login-brand{
+  width:100%;
+  max-width:430px;
+  text-align:center;
+}
+
+.school-logo{
+  display:block;
+  width:118px;
+  height:118px;
+  object-fit:contain;
+  margin:0 auto 14px;
+  filter:drop-shadow(0 10px 18px rgba(15,23,42,.13));
+}
+
+.school-name{
+  color:#17336f;
+  font-size:18px;
+  font-weight:900;
+  letter-spacing:.5px;
+}
+
+.school-subtitle{
+  margin-top:4px;
+  color:#64748b;
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:.16em;
+}
+
+.login-divider{
+  width:52px;
+  height:4px;
+  margin:16px auto 18px;
+  border-radius:99px;
+  background:linear-gradient(90deg,#2563eb,#06b6d4);
+}
+
+.login-area h2{
+  margin:0;
+  color:#172033;
+  font-size:23px;
+  line-height:1.2;
+  letter-spacing:-.3px;
+}
+
+.login-area p{
+  margin:7px 0 18px;
+  color:#7b8798;
+  font-size:12px;
+}
+
+.login-area input{
+  width:100%;
+  max-width:390px;
+  height:50px;
+  margin:6px auto;
+  padding:0 15px;
+  border:1px solid #d7e0eb;
+  border-radius:13px;
+  background:#fff;
+  color:#172033;
+  font-size:15px;
+  outline:none;
+  box-shadow:0 3px 12px rgba(15,23,42,.025);
+}
+
+.login-area input:focus{
+  border-color:#60a5fa;
+  box-shadow:0 0 0 4px rgba(37,99,235,.08);
+}
+
+.login-area button{
+  width:100%;
+  max-width:390px;
+  height:50px;
+  margin:10px auto 0;
+  border-radius:13px;
+  color:#fff;
+  font-size:14px;
+  font-weight:900;
+  letter-spacing:.02em;
+  background:linear-gradient(135deg,#2563eb,#1d4ed8);
+  box-shadow:0 11px 24px rgba(37,99,235,.20);
+}
+
+.login-area button:hover{
+  filter:brightness(1.04);
+  transform:translateY(-1px);
+}
+
+.login-area .hasil{
+  width:100%;
+  max-width:390px;
+  min-height:0;
+  margin:13px auto 0;
+  padding:10px 12px;
+  background:#f8fafc;
+  border:1px solid #e7edf5;
+  color:#475569;
+  border-radius:11px;
+  font-size:11px;
+}
+
+.scanner-area{
+  position:relative;
+  min-height:calc(100vh - 56px);
+  padding:18px;
+  background:#f7f9fc;
+}
+
+.scanner-area h2{
+  margin:0 0 11px;
+  color:#172033;
+  font-size:20px;
+}
+
+.scanner-area .info{
+  margin-bottom:10px;
+  padding:10px 12px;
+  border:1px solid #e5ebf3;
+  border-radius:12px;
+  background:#fff;
+  box-shadow:0 5px 15px rgba(15,23,42,.035);
+  font-size:11px;
+}
+
+.menu{
+  position:absolute;
+  z-index:20;
+  top:16px;
+  right:16px;
+  width:52px;
+  margin:0 !important;
+}
+
+.menu-toggle{
+  width:48px !important;
+  height:44px !important;
+  margin:0 !important;
+  padding:0 !important;
+  display:flex !important;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  border-radius:13px !important;
+  background:#fff !important;
+  border:1px solid #e0e7ef !important;
+  box-shadow:0 8px 20px rgba(15,23,42,.08);
+}
+
+.menu-toggle span{
+  display:block;
+  width:20px;
+  height:2px;
+  margin:2.5px 0;
+  border-radius:99px;
+  background:#334155;
+}
+
+.menu-drawer{
+  position:absolute;
+  top:52px;
+  right:0;
+  width:245px;
+  display:none;
+  padding:10px;
+  border:1px solid #e1e8f0;
+  border-radius:16px;
+  background:rgba(255,255,255,.98);
+  box-shadow:0 18px 40px rgba(15,23,42,.15);
+  backdrop-filter:blur(8px);
+}
+
+.menu-drawer.open{
+  display:block;
+}
+
+.menu-hint{
+  padding:7px 9px 9px;
+  color:#94a3b8;
+  font-size:9px;
+  font-weight:900;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+}
+
+.menu-drawer button{
+  min-height:43px;
+  margin:4px 0 !important;
+  border-radius:11px !important;
+  font-size:12px !important;
+  font-weight:850;
+  text-align:left;
+}
+
+.menu-drawer button:hover{
+  transform:translateY(-1px);
+}
+
+#reader{
+  width:100%;
+  max-width:620px;
+  min-height:300px;
+  margin:12px auto 0;
+  overflow:hidden;
+  border:5px solid #fff;
+  border-radius:20px;
+  background:#0f172a;
+  box-shadow:0 14px 34px rgba(15,23,42,.13);
+}
+
+#reader video{
+  border-radius:14px;
+}
+
+#hasil{
+  margin-top:12px;
+  background:#fff;
+  border:1px solid #e5ebf3;
+  border-radius:13px;
+  box-shadow:0 6px 18px rgba(15,23,42,.04);
+  font-size:12px;
+}
+
+.scanner-area:after{
+  content:"Arahkan kamera ke barcode siswa";
+  display:block;
+  margin:9px 0 0;
+  text-align:center;
+  color:#94a3b8;
+  font-size:10px;
+}
+
+.manual-area{
+  padding:22px;
+  background:#f7f9fc;
+}
+
+.manual-area .info,
+.manual-area .hasil{
+  background:#fff;
+  border:1px solid #e5ebf3;
+}
+
+@media(max-width:600px){
+  body{padding:6px}
+  .container{
+    width:100%;
+    margin:4px auto;
+    border-radius:18px;
+  }
+  .login-area{
+    min-height:0;
+    height:calc(100dvh - 12px);
+    padding:18px 15px;
+  }
+  .school-logo{
+    width:102px;
+    height:102px;
+  }
+  .school-name{font-size:15px}
+  .school-subtitle{font-size:9px}
+  .login-area h2{font-size:21px}
+  .scanner-area{
+    min-height:calc(100vh - 20px);
+    padding:14px;
+  }
+  .scanner-area h2{
+    padding-right:58px;
+    font-size:18px;
+  }
+  .menu{
+    top:12px;
+    right:12px;
+  }
+  .menu-drawer{
+    width:calc(100vw - 42px);
+    max-width:280px;
+  }
+  #reader{
+    min-height:230px;
+    margin-top:10px;
+    border-width:4px;
+    border-radius:16px;
+  }
+}
+
+@media(max-width:380px){
+  .school-logo{
+    width:88px;
+    height:88px;
+  }
+  .school-name{font-size:14px}
+  .login-area{
+    padding-left:13px;
+    padding-right:13px;
+  }
+}
+
+</style>
+
+
+<style>
+  /* Scanner tab: login is never displayed in the new tab */
+  html.scanner-mode #loginArea {
+    display: none !important;
+  }
+
+  html.scanner-mode #scannerArea {
+    display: block !important;
+  }
+
+  /* Manual view is controlled by JavaScript. */
+
+  html.scanner-mode body {
+    padding: 10px;
+    min-height: 100dvh;
+  }
+
+  html.scanner-mode .container {
+    max-width: 760px;
+    min-height: calc(100dvh - 20px);
+  }
+</style>
+<script>
+  (function () {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("mode") === "scanner") {
+      document.documentElement.classList.add("scanner-mode");
+    }
+  })();
+</script>
+
+
+<script>
+  (function () {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("mode") === "scanner") {
+      document.title = "Scanner Offline-First Absensi";
+    }
+  })();
+</script>
+
+
+<style>
+/* ===== MOBILE SCANNER — LARGE & COMFORTABLE ===== */
+@media (max-width: 700px){
+  html, body{
+    width:100%;
+    min-width:0;
+    overflow-x:hidden;
+  }
+
+  body{
+    padding:0 !important;
+    font-size:16px !important;
+  }
+
+  .container{
+    width:100% !important;
+    max-width:none !important;
+    min-height:100dvh !important;
+    margin:0 !important;
+    border-radius:0 !important;
+    border:0 !important;
+    box-shadow:none !important;
+  }
+
+  /* Login */
+  #loginArea{
+    min-height:100dvh !important;
+    width:100% !important;
+    padding:22px 18px !important;
+    box-sizing:border-box !important;
+    justify-content:center !important;
+  }
+
+  #loginArea .school-logo,
+  .school-logo{
+    width:92px !important;
+    height:92px !important;
+    margin-bottom:12px !important;
+  }
+
+  #loginArea h2{
+    font-size:23px !important;
+    line-height:1.25 !important;
+  }
+
+  #loginArea input{
+    width:100% !important;
+    max-width:none !important;
+    height:54px !important;
+    box-sizing:border-box !important;
+    font-size:17px !important;
+  }
+
+  #loginArea button{
+    width:100% !important;
+    max-width:none !important;
+    height:54px !important;
+    font-size:16px !important;
+  }
+
+  /* Scanner */
+  #scannerArea{
+    width:100% !important;
+    min-height:100dvh !important;
+    box-sizing:border-box !important;
+    padding:12px !important;
+  }
+
+  #scannerArea h2{
+    font-size:21px !important;
+    margin:4px 0 10px !important;
+  }
+
+  #petugasInfo,
+  #statusHariIni,
+  #hasil{
+    font-size:14px !important;
+  }
+
+  #reader{
+    width:100% !important;
+    max-width:none !important;
+    min-height:330px !important;
+    margin:8px 0 !important;
+    border-width:4px !important;
+    border-radius:16px !important;
+  }
+
+  #reader video{
+    width:100% !important;
+    height:auto !important;
+    min-height:300px !important;
+    object-fit:cover !important;
+  }
+
+  .menu-toggle{
+    width:52px !important;
+    height:48px !important;
+    font-size:25px !important;
+  }
+
+  .menu-drawer{
+    width:100% !important;
+    box-sizing:border-box !important;
+  }
+
+  .menu-drawer button{
+    width:100% !important;
+    min-height:50px !important;
+    font-size:15px !important;
+    margin:4px 0 !important;
+  }
+
+  /* Make manual view mobile-friendly too */
+  #manualArea{
+    min-height:100dvh !important;
+    box-sizing:border-box !important;
+    padding:16px !important;
+  }
+
+  #manualArea input,
+  #manualArea textarea,
+  #manualArea button{
+    width:100% !important;
+    box-sizing:border-box !important;
+    min-height:50px !important;
+    font-size:15px !important;
+  }
+}
+</style>
+
+
+<style>
+.menu-exit-button{
+  color:#b91c1c !important;
+  background:#fff7f7 !important;
+  border:1px solid #fecaca !important;
+}
+
+.menu-exit-button:hover{
+  background:#fee2e2 !important;
+}
+</style>
+
+
+<style>
+/* =========================================================
+   FINAL LOGIN MOBILE FIX
+   Hilangkan bingkai memanjang dan paksa login fit 1 layar.
+   ========================================================= */
+
+html:not(.scanner-mode),
+html:not(.scanner-mode) body{
+  min-height:100%;
+  height:100%;
+}
+
+html:not(.scanner-mode) body{
+  margin:0 !important;
+  padding:0 !important;
+  overflow:hidden !important;
+  background:#f5f8fc !important;
+}
+
+html:not(.scanner-mode) .container{
+  width:100% !important;
+  max-width:none !important;
+  min-height:100dvh !important;
+  height:100dvh !important;
+  margin:0 !important;
+  padding:0 !important;
+  border:0 !important;
+  border-radius:0 !important;
+  box-shadow:none !important;
+  background:transparent !important;
+  overflow:hidden !important;
+}
+
+html:not(.scanner-mode) #loginArea{
+  width:100% !important;
+  height:100dvh !important;
+  min-height:100dvh !important;
+  box-sizing:border-box !important;
+  margin:0 !important;
+  padding:18px !important;
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:center !important;
+  justify-content:center !important;
+  overflow:hidden !important;
+  border:0 !important;
+  border-radius:0 !important;
+}
+
+/* Login card dibuat sebagai satu panel pendek, bukan bingkai panjang */
+html:not(.scanner-mode) #loginArea .login-card,
+html:not(.scanner-mode) #loginArea form{
+  width:min(390px,100%) !important;
+  max-width:390px !important;
+  box-sizing:border-box !important;
+}
+
+/* Jika elemen login tidak punya class/form, batasi anak langsung */
+html:not(.scanner-mode) #loginArea > *{
+  max-width:390px;
+}
+
+/* Logo */
+html:not(.scanner-mode) #loginArea .school-logo,
+html:not(.scanner-mode) #loginArea img{
+  width:82px !important;
+  height:82px !important;
+  object-fit:contain !important;
+  margin:0 auto 9px !important;
+}
+
+/* Judul */
+html:not(.scanner-mode) #loginArea h2{
+  margin:0 0 5px !important;
+  font-size:21px !important;
+  line-height:1.2 !important;
+  text-align:center !important;
+}
+
+/* Paragraf/subjudul */
+html:not(.scanner-mode) #loginArea p{
+  margin:3px 0 10px !important;
+  font-size:12px !important;
+  text-align:center !important;
+}
+
+/* Input */
+html:not(.scanner-mode) #loginArea input{
+  width:100% !important;
+  height:48px !important;
+  min-height:48px !important;
+  margin:4px 0 !important;
+  box-sizing:border-box !important;
+  font-size:16px !important;
+}
+
+/* Tombol */
+html:not(.scanner-mode) #loginArea button{
+  width:100% !important;
+  height:48px !important;
+  min-height:48px !important;
+  margin:7px 0 0 !important;
+  box-sizing:border-box !important;
+  font-size:15px !important;
+}
+
+/* Pesan hasil jangan membuat halaman bertambah tinggi */
+html:not(.scanner-mode) #loginArea .hasil,
+html:not(.scanner-mode) #loginArea #hasil{
+  width:100% !important;
+  max-height:54px !important;
+  overflow:auto !important;
+  margin:7px 0 0 !important;
+  box-sizing:border-box !important;
+}
+
+/* Layar HP sangat pendek */
+@media (max-height:700px) and (max-width:700px){
+  html:not(.scanner-mode) #loginArea{
+    padding:10px 16px !important;
+  }
+
+  html:not(.scanner-mode) #loginArea .school-logo,
+  html:not(.scanner-mode) #loginArea img{
+    width:66px !important;
+    height:66px !important;
+    margin-bottom:5px !important;
+  }
+
+  html:not(.scanner-mode) #loginArea h2{
+    font-size:18px !important;
+  }
+
+  html:not(.scanner-mode) #loginArea p{
+    margin:2px 0 6px !important;
+    font-size:11px !important;
+  }
+
+  html:not(.scanner-mode) #loginArea input,
+  html:not(.scanner-mode) #loginArea button{
+    height:44px !important;
+    min-height:44px !important;
+  }
+}
+</style>
+
+
+<style id="final-layout-fix">
+/* =========================================================
+   FINAL FIX — LOGIN 1 SCREEN + SCANNER MENU KELUAR
+   ========================================================= */
+
+/* ---------- LOGIN: benar-benar full screen ---------- */
+html:not(.scanner-mode) {
+  width:100%;
+  height:100%;
+  overflow:hidden;
+}
+
+html:not(.scanner-mode) body {
+  width:100%;
+  height:100dvh;
+  min-height:100dvh;
+  margin:0 !important;
+  padding:0 !important;
+  overflow:hidden !important;
+  background:
+    radial-gradient(circle at 10% 5%,rgba(37,99,235,.10),transparent 28%),
+    radial-gradient(circle at 90% 95%,rgba(14,165,233,.08),transparent 30%),
+    #f5f8fc !important;
+}
+
+html:not(.scanner-mode) .container {
+  width:100% !important;
+  max-width:none !important;
+  height:100dvh !important;
+  min-height:100dvh !important;
+  margin:0 !important;
+  padding:0 !important;
+  background:transparent !important;
+  border:0 !important;
+  border-radius:0 !important;
+  box-shadow:none !important;
+  overflow:hidden !important;
+}
+
+html:not(.scanner-mode) #loginArea {
+  width:100% !important;
+  height:100dvh !important;
+  min-height:100dvh !important;
+  margin:0 !important;
+  padding:16px !important;
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:center !important;
+  justify-content:center !important;
+  overflow:hidden !important;
+  background:transparent !important;
+}
+
+/* Isi login tidak membuat halaman memanjang */
+html:not(.scanner-mode) #loginArea .login-brand {
+  width:min(100%,390px) !important;
+  max-width:390px !important;
+  text-align:center !important;
+  flex:0 0 auto !important;
+}
+
+html:not(.scanner-mode) #loginArea .school-logo {
+  width:78px !important;
+  height:78px !important;
+  object-fit:contain !important;
+  display:block !important;
+  margin:0 auto 7px !important;
+}
+
+html:not(.scanner-mode) #loginArea .school-name {
+  font-size:18px !important;
+  line-height:1.15 !important;
+  margin:0 !important;
+}
+
+html:not(.scanner-mode) #loginArea .school-subtitle {
+  font-size:10px !important;
+  margin:3px 0 !important;
+}
+
+html:not(.scanner-mode) #loginArea h2 {
+  font-size:20px !important;
+  line-height:1.2 !important;
+  margin:7px 0 3px !important;
+}
+
+html:not(.scanner-mode) #loginArea p {
+  font-size:12px !important;
+  margin:2px 0 8px !important;
+}
+
+html:not(.scanner-mode) #loginArea > input,
+html:not(.scanner-mode) #loginArea > button,
+html:not(.scanner-mode) #loginArea > .hasil {
+  width:min(100%,390px) !important;
+  max-width:390px !important;
+  flex:0 0 auto !important;
+}
+
+html:not(.scanner-mode) #loginArea > input {
+  height:47px !important;
+  margin:4px 0 !important;
+  font-size:16px !important;
+}
+
+html:not(.scanner-mode) #loginArea > button {
+  height:47px !important;
+  margin:7px 0 0 !important;
+  font-size:15px !important;
+}
+
+html:not(.scanner-mode) #loginArea > .hasil {
+  max-height:45px !important;
+  min-height:0 !important;
+  overflow:auto !important;
+  margin-top:6px !important;
+}
+
+/* ---------- SCANNER: container tetap normal ---------- */
+html.scanner-mode body {
+  margin:0 !important;
+  padding:10px !important;
+  min-height:100dvh;
+  background:#f5f8fc !important;
+}
+
+html.scanner-mode .container {
+  width:min(100%,760px) !important;
+  max-width:760px !important;
+  min-height:calc(100dvh - 20px) !important;
+  margin:0 auto !important;
+  background:#fff !important;
+  border:1px solid #e4eaf2 !important;
+  border-radius:20px !important;
+  box-shadow:0 12px 40px rgba(15,23,42,.08) !important;
+}
+
+/* ---------- TOMBOL KELUAR ---------- */
+#menuDrawer .menu-exit-button {
+  display:block !important;
+  width:100% !important;
+  min-height:48px !important;
+  margin:5px 0 !important;
+  padding:11px 14px !important;
+  box-sizing:border-box !important;
+  border-radius:11px !important;
+  background:#fff1f2 !important;
+  color:#b91c1c !important;
+  border:1px solid #fecdd3 !important;
+  font-size:14px !important;
+  font-weight:800 !important;
+  text-align:left !important;
+}
+
+#menuDrawer .menu-exit-button:hover {
+  background:#ffe4e6 !important;
+}
+
+/* ---------- HP ---------- */
+@media (max-width:700px) {
+  html:not(.scanner-mode) #loginArea {
+    padding:12px 16px !important;
+  }
+
+  html:not(.scanner-mode) #loginArea .school-logo {
+    width:70px !important;
+    height:70px !important;
+  }
+
+  html:not(.scanner-mode) #loginArea .school-name {
+    font-size:16px !important;
+  }
+
+  html:not(.scanner-mode) #loginArea h2 {
+    font-size:19px !important;
+  }
+
+  html:not(.scanner-mode) #loginArea > input,
+  html:not(.scanner-mode) #loginArea > button {
+    height:46px !important;
+  }
+
+  html.scanner-mode body {
+    padding:0 !important;
+  }
+
+  html.scanner-mode .container {
+    width:100% !important;
+    min-height:100dvh !important;
+    border:0 !important;
+    border-radius:0 !important;
+    box-shadow:none !important;
+  }
+
+  html.scanner-mode #scannerArea {
+    padding:12px !important;
+  }
+
+  html.scanner-mode #reader {
+    width:100% !important;
+    min-height:330px !important;
+  }
+
+  html.scanner-mode #reader video {
+    min-height:300px !important;
+    object-fit:cover !important;
+  }
+
+  #menuDrawer .menu-exit-button {
+    min-height:50px !important;
+    font-size:15px !important;
+  }
+}
+
+@media (max-height:680px) and (max-width:700px) {
+  html:not(.scanner-mode) #loginArea {
+    padding:8px 14px !important;
+  }
+
+  html:not(.scanner-mode) #loginArea .school-logo {
+    width:58px !important;
+    height:58px !important;
+    margin-bottom:4px !important;
+  }
+
+  html:not(.scanner-mode) #loginArea .school-name {
+    font-size:15px !important;
+  }
+
+  html:not(.scanner-mode) #loginArea h2 {
+    font-size:17px !important;
+    margin-top:4px !important;
+  }
+
+  html:not(.scanner-mode) #loginArea p {
+    margin-bottom:4px !important;
+  }
+
+  html:not(.scanner-mode) #loginArea > input,
+  html:not(.scanner-mode) #loginArea > button {
+    height:42px !important;
+  }
+}
+</style>
+
+
+<style id="FINAL_RESPONSIVE_LAYOUT">
+/* =========================================================
+   FINAL RESPONSIVE LAYOUT
+   Hanya mengatur tampilan. Tidak mengubah fungsi JS.
+   ========================================================= */
+
+*,
+*::before,
+*::after{
+  box-sizing:border-box;
+}
+
+html{
+  width:100%;
+  min-height:100%;
+}
+
+body{
+  width:100%;
+  min-height:100vh;
+}
+
+/* =========================
+   LOGIN — DESKTOP
+   ========================= */
+html:not(.scanner-mode) body{
+  margin:0 !important;
+  padding:0 !important;
+  min-height:100vh !important;
+  overflow:hidden !important;
+  background:
+    radial-gradient(circle at 12% 10%,rgba(37,99,235,.10),transparent 30%),
+    radial-gradient(circle at 88% 90%,rgba(14,165,233,.08),transparent 30%),
+    #f5f8fc !important;
+}
+
+html:not(.scanner-mode) .container{
+  width:100% !important;
+  max-width:none !important;
+  min-height:100vh !important;
+  height:100vh !important;
+  margin:0 !important;
+  padding:0 !important;
+  border:0 !important;
+  border-radius:0 !important;
+  box-shadow:none !important;
+  background:transparent !important;
+  overflow:hidden !important;
+}
+
+html:not(.scanner-mode) #loginArea{
+  width:100% !important;
+  height:100vh !important;
+  min-height:100vh !important;
+  margin:0 !important;
+  padding:24px !important;
+  display:flex !important;
+  flex-direction:column !important;
+  justify-content:center !important;
+  align-items:center !important;
+  overflow:hidden !important;
+  background:transparent !important;
+}
+
+/* Batasi konten login, bukan container luar */
+html:not(.scanner-mode) #loginArea > *{
+  width:min(420px,100%) !important;
+  max-width:420px !important;
+  flex-shrink:0 !important;
+}
+
+html:not(.scanner-mode) #loginArea img,
+html:not(.scanner-mode) #loginArea .school-logo{
+  width:88px !important;
+  height:88px !important;
+  object-fit:contain !important;
+  display:block !important;
+  margin:0 auto 10px !important;
+}
+
+html:not(.scanner-mode) #loginArea h2{
+  margin:0 0 5px !important;
+  text-align:center !important;
+  font-size:24px !important;
+  line-height:1.2 !important;
+}
+
+html:not(.scanner-mode) #loginArea p{
+  margin:3px 0 12px !important;
+  text-align:center !important;
+  font-size:13px !important;
+}
+
+html:not(.scanner-mode) #loginArea input{
+  width:100% !important;
+  height:52px !important;
+  margin:5px 0 !important;
+  font-size:16px !important;
+}
+
+html:not(.scanner-mode) #loginArea button{
+  width:100% !important;
+  height:52px !important;
+  margin:8px 0 0 !important;
+  font-size:16px !important;
+}
+
+html:not(.scanner-mode) #loginArea .hasil,
+html:not(.scanner-mode) #loginArea #hasil{
+  max-height:52px !important;
+  overflow:auto !important;
+}
+
+/* =========================
+   SCANNER — DESKTOP
+   ========================= */
+html.scanner-mode body{
+  margin:0 !important;
+  padding:16px !important;
+  min-height:100vh !important;
+  background:#f5f8fc !important;
+  overflow-x:hidden !important;
+}
+
+html.scanner-mode .container{
+  width:min(820px,100%) !important;
+  max-width:820px !important;
+  min-height:calc(100vh - 32px) !important;
+  margin:0 auto !important;
+  background:#fff !important;
+  border:1px solid #e3eaf3 !important;
+  border-radius:22px !important;
+  box-shadow:0 14px 45px rgba(15,23,42,.08) !important;
+  overflow:hidden !important;
+}
+
+html.scanner-mode #scannerArea{
+  width:100% !important;
+  padding:16px !important;
+}
+
+html.scanner-mode #reader{
+  width:100% !important;
+  max-width:none !important;
+  margin:8px auto !important;
+  overflow:hidden !important;
+  border-radius:18px !important;
+}
+
+html.scanner-mode #reader video{
+  width:100% !important;
+  height:auto !important;
+}
+
+/* Menu drawer */
+html.scanner-mode .menu{
+  width:100% !important;
+}
+
+html.scanner-mode .menu-toggle{
+  width:48px !important;
+  height:44px !important;
+  margin-left:auto !important;
+}
+
+html.scanner-mode .menu-drawer{
+  width:100% !important;
+}
+
+html.scanner-mode .menu-drawer button{
+  width:100% !important;
+  min-height:46px !important;
+}
+
+/* KELUAR selalu terlihat di menu */
+html.scanner-mode #menuDrawer .menu-exit-button{
+  display:block !important;
+  width:100% !important;
+  min-height:48px !important;
+  background:#fff1f2 !important;
+  color:#b91c1c !important;
+  border:1px solid #fecdd3 !important;
+}
+
+/* =========================
+   HP / TABLET
+   ========================= */
+@media (max-width:700px){
+
+  html:not(.scanner-mode) body{
+    min-height:100dvh !important;
+    height:100dvh !important;
+  }
+
+  html:not(.scanner-mode) .container{
+    min-height:100dvh !important;
+    height:100dvh !important;
+  }
+
+  html:not(.scanner-mode) #loginArea{
+    min-height:100dvh !important;
+    height:100dvh !important;
+    padding:
+      max(12px, env(safe-area-inset-top))
+      18px
+      max(12px, env(safe-area-inset-bottom))
+      18px !important;
+  }
+
+  html:not(.scanner-mode) #loginArea > *{
+    width:min(390px,100%) !important;
+    max-width:390px !important;
+  }
+
+  html:not(.scanner-mode) #loginArea img,
+  html:not(.scanner-mode) #loginArea .school-logo{
+    width:74px !important;
+    height:74px !important;
+    margin-bottom:7px !important;
+  }
+
+  html:not(.scanner-mode) #loginArea h2{
+    font-size:20px !important;
+  }
+
+  html:not(.scanner-mode) #loginArea p{
+    font-size:12px !important;
+    margin-bottom:8px !important;
+  }
+
+  html:not(.scanner-mode) #loginArea input{
+    height:50px !important;
+    font-size:16px !important;
+  }
+
+  html:not(.scanner-mode) #loginArea button{
+    height:50px !important;
+    font-size:15px !important;
+  }
+
+  /* Scanner full-width on phone */
+  html.scanner-mode body{
+    padding:0 !important;
+    min-height:100dvh !important;
+    background:#f5f8fc !important;
+  }
+
+  html.scanner-mode .container{
+    width:100% !important;
+    max-width:none !important;
+    min-height:100dvh !important;
+    margin:0 !important;
+    border:0 !important;
+    border-radius:0 !important;
+    box-shadow:none !important;
+  }
+
+  html.scanner-mode #scannerArea{
+    padding:
+      max(8px, env(safe-area-inset-top))
+      10px
+      max(10px, env(safe-area-inset-bottom))
+      10px !important;
+  }
+
+  html.scanner-mode #reader{
+    width:100% !important;
+    min-height:0 !important;
+    margin:8px 0 !important;
+    border:4px solid #fff !important;
+    border-radius:16px !important;
+  }
+
+  html.scanner-mode #reader video{
+    width:100% !important;
+    min-height:0 !important;
+    max-height:none !important;
+    object-fit:cover !important;
+  }
+
+  html.scanner-mode .menu-toggle{
+    width:52px !important;
+    height:48px !important;
+    margin:0 0 8px auto !important;
+  }
+
+  html.scanner-mode .menu-drawer{
+    border-radius:15px !important;
+    padding:8px !important;
+  }
+
+  html.scanner-mode .menu-drawer button{
+    min-height:50px !important;
+    font-size:14px !important;
+  }
+
+  html.scanner-mode #menuDrawer .menu-exit-button{
+    min-height:50px !important;
+    font-size:15px !important;
+  }
+}
+
+/* HP layar pendek: padatkan login tanpa scroll */
+@media (max-width:700px) and (max-height:700px){
+
+  html:not(.scanner-mode) #loginArea{
+    padding:8px 16px !important;
+  }
+
+  html:not(.scanner-mode) #loginArea img,
+  html:not(.scanner-mode) #loginArea .school-logo{
+    width:60px !important;
+    height:60px !important;
+    margin-bottom:5px !important;
+  }
+
+  html:not(.scanner-mode) #loginArea h2{
+    font-size:18px !important;
+    margin-bottom:2px !important;
+  }
+
+  html:not(.scanner-mode) #loginArea p{
+    font-size:11px !important;
+    margin:2px 0 5px !important;
+  }
+
+  html:not(.scanner-mode) #loginArea input,
+  html:not(.scanner-mode) #loginArea button{
+    height:44px !important;
+  }
+}
+</style>
+
+
+<style id="MANUAL_MODE_LAYOUT_FIX">
+/* Absen manual mengambil alih tampilan scanner saat menu dipilih. */
+html.scanner-mode.manual-mode #scannerArea{
+  display:none !important;
+}
+
+html.scanner-mode.manual-mode #manualArea{
+  display:block !important;
+  width:100% !important;
+  min-height:calc(100dvh - 24px);
+}
+
+@media(max-width:700px){
+  html.scanner-mode.manual-mode #manualArea{
+    min-height:100dvh !important;
+    padding:14px !important;
+    overflow-x:hidden !important;
+  }
+
+  html.scanner-mode.manual-mode #manualArea input,
+  html.scanner-mode.manual-mode #manualArea textarea,
+  html.scanner-mode.manual-mode #manualArea button{
+    width:100% !important;
+    min-height:50px !important;
+    font-size:15px !important;
+    box-sizing:border-box !important;
+  }
+
+  html.scanner-mode.manual-mode #hasilPencarianManual{
+    width:100% !important;
+    overflow-x:hidden !important;
+  }
+}
+</style>
+
+
+<style id="FINAL_UI_REVISION_2026">
+/* Menu hamburger lebih ramping di HP */
+@media (max-width:700px){
+  html.scanner-mode .menu-drawer{
+    width:min(300px, calc(100vw - 20px)) !important;
+    max-width:300px !important;
+    margin-left:auto !important;
+    margin-right:0 !important;
+    padding:7px !important;
+    box-sizing:border-box !important;
+  }
+
+  html.scanner-mode .menu-drawer button{
+    min-height:44px !important;
+    padding:9px 11px !important;
+    font-size:13px !important;
+  }
+
+  html.scanner-mode .menu-hint{
+    padding:5px 8px 7px !important;
+    font-size:9px !important;
+  }
+
+  .dashboard-harian-menu{
+    width:100%;
+    margin:5px 0;
+    padding:8px;
+    border:1px solid #e5eaf1;
+    border-radius:11px;
+    background:#f8fafc;
+  }
+
+  .dashboard-harian-title{
+    font-size:13px;
+    font-weight:800;
+    margin-bottom:6px;
+    color:#334155;
+  }
+
+  .dashboard-harian-select{
+    width:100%;
+    min-height:42px;
+    padding:0 10px;
+    border:1px solid #d8e0ea;
+    border-radius:9px;
+    background:#fff;
+    color:#334155;
+    font-size:13px;
+    font-weight:700;
+  }
+
+  /* Scanner viewport lebih besar */
+  html.scanner-mode #reader{
+    width:100% !important;
+    height:min(62vh, 560px) !important;
+    min-height:380px !important;
+    max-height:560px !important;
+    margin:8px 0 10px !important;
+    overflow:hidden !important;
+    border-radius:18px !important;
+  }
+
+  html.scanner-mode #reader video{
+    width:100% !important;
+    height:100% !important;
+    max-width:none !important;
+    object-fit:cover !important;
+  }
+
+  .scanner-logout-button{
+    display:block !important;
+    width:100% !important;
+    min-height:48px !important;
+    margin:10px 0 4px !important;
+    border:1px solid #fecdd3 !important;
+    border-radius:11px !important;
+    background:#fff1f2 !important;
+    color:#b91c1c !important;
+    font-size:14px !important;
+    font-weight:800 !important;
+    box-sizing:border-box !important;
+  }
+}
+
+/* Desktop */
+.dashboard-harian-menu{
+  width:100%;
+  margin:5px 0;
+  padding:8px;
+  border:1px solid #e5eaf1;
+  border-radius:11px;
+  background:#f8fafc;
+}
+
+.dashboard-harian-title{
+  font-size:13px;
+  font-weight:800;
+  margin-bottom:6px;
+  color:#334155;
+}
+
+.dashboard-harian-select{
+  width:100%;
+  min-height:42px;
+  padding:0 10px;
+  border:1px solid #d8e0ea;
+  border-radius:9px;
+  background:#fff;
+  color:#334155;
+  font-size:13px;
+  font-weight:700;
+}
+
+.scanner-logout-button{
+  display:block;
+  width:100%;
+  min-height:48px;
+  margin:10px 0 4px;
+  border:1px solid #fecdd3;
+  border-radius:11px;
+  background:#fff1f2;
+  color:#b91c1c;
+  font-size:14px;
+  font-weight:800;
+}
+</style>
+
+
+<style id="HAMBURGER_WIDTH_FINAL">
+/* FINAL: hamburger drawer benar-benar dibatasi agar tidak melebar di HP */
+@media (max-width:700px){
+  #menuDrawer,
+  html.scanner-mode #menuDrawer,
+  .menu-drawer{
+    position:absolute !important;
+    top:56px !important;
+    right:8px !important;
+    left:auto !important;
+    width:270px !important;
+    max-width:calc(100vw - 16px) !important;
+    min-width:0 !important;
+    box-sizing:border-box !important;
+    overflow-x:hidden !important;
+    border-radius:14px !important;
+    padding:7px !important;
+  }
+
+  #menuDrawer > *,
+  html.scanner-mode #menuDrawer > *{
+    width:100% !important;
+    max-width:100% !important;
+    box-sizing:border-box !important;
+  }
+
+  #menuDrawer button,
+  #menuDrawer .dashboard-harian-menu,
+  #menuDrawer .dashboard-harian-select{
+    width:100% !important;
+    max-width:100% !important;
+    box-sizing:border-box !important;
+  }
+
+  #menuDrawer button{
+    white-space:normal !important;
+    overflow:hidden !important;
+    text-overflow:ellipsis !important;
+  }
+
+  .dashboard-harian-menu{
+    padding:6px !important;
+  }
+
+  .dashboard-harian-title{
+    font-size:12px !important;
+  }
+
+  .dashboard-harian-select{
+    min-height:40px !important;
+    font-size:12px !important;
+  }
+}
+</style>
+
+
+<style id="HAMBURGER_WIDTH_FINAL_2">
+@media (max-width:700px){
+  /* Override seluruh aturan lebar drawer sebelumnya */
+  #menuDrawer,
+  html.scanner-mode #menuDrawer,
+  .menu-drawer{
+    width:225px !important;
+    max-width:calc(100vw - 12px) !important;
+    min-width:0 !important;
+    right:6px !important;
+    left:auto !important;
+    padding:5px !important;
+    border-radius:12px !important;
+    overflow-x:hidden !important;
+  }
+
+  #menuDrawer > *,
+  #menuDrawer button,
+  #menuDrawer .dashboard-harian-menu,
+  #menuDrawer .dashboard-harian-select{
+    width:100% !important;
+    max-width:100% !important;
+    min-width:0 !important;
+  }
+
+  #menuDrawer button{
+    min-height:40px !important;
+    padding:7px 9px !important;
+    font-size:11.5px !important;
+    line-height:1.15 !important;
+  }
+
+  #menuDrawer .dashboard-harian-menu{
+    padding:5px !important;
+    margin:4px 0 !important;
+  }
+
+  #menuDrawer .dashboard-harian-title{
+    font-size:11px !important;
+    margin-bottom:4px !important;
+  }
+
+  #menuDrawer .dashboard-harian-select{
+    min-height:36px !important;
+    padding:0 7px !important;
+    font-size:11px !important;
+  }
+}
+</style>
+
+
+<style id="HAMBURGER_WIDTH_REAL_FIX">
+/*
+  FIX SEBENARNYA:
+  Screenshot laptop menunjukkan drawer melebar 100% karena ada
+  rule html.scanner-mode .menu-drawer { width:100% !important; }.
+  Rule ini harus dioverride untuk SEMUA ukuran layar, bukan hanya HP.
+*/
+
+html.scanner-mode .menu{
+  width:52px !important;
+  position:absolute !important;
+  right:16px !important;
+  top:16px !important;
+  z-index:1000 !important;
+}
+
+html.scanner-mode .menu-drawer,
+html.scanner-mode #menuDrawer{
+  position:absolute !important;
+  top:52px !important;
+  right:0 !important;
+  left:auto !important;
+  width:330px !important;
+  max-width:calc(100vw - 24px) !important;
+  min-width:0 !important;
+  box-sizing:border-box !important;
+  padding:8px !important;
+  overflow-x:hidden !important;
+  border-radius:15px !important;
+}
+
+html.scanner-mode .menu-drawer > *,
+html.scanner-mode #menuDrawer > *{
+  width:100% !important;
+  max-width:100% !important;
+  min-width:0 !important;
+  box-sizing:border-box !important;
+}
+
+html.scanner-mode .menu-drawer button,
+html.scanner-mode #menuDrawer button{
+  width:100% !important;
+  max-width:100% !important;
+  box-sizing:border-box !important;
+}
+
+/* Desktop: menu tetap ringkas */
+@media (min-width:701px){
+  html.scanner-mode .menu-drawer,
+  html.scanner-mode #menuDrawer{
+    width:330px !important;
+    max-width:330px !important;
+  }
+}
+
+/* HP: lebih kecil lagi */
+@media (max-width:700px){
+  html.scanner-mode .menu{
+    right:8px !important;
+    top:8px !important;
+  }
+
+  html.scanner-mode .menu-drawer,
+  html.scanner-mode #menuDrawer{
+    top:52px !important;
+    right:0 !important;
+    width:225px !important;
+    max-width:calc(100vw - 12px) !important;
+    padding:5px !important;
+  }
+
+  html.scanner-mode .menu-drawer button,
+  html.scanner-mode #menuDrawer button{
+    min-height:40px !important;
+    padding:7px 9px !important;
+    font-size:11.5px !important;
+  }
+}
+</style>
+
+
+<style id="MENU_PETUGAS_COLOR_CARDS">
+/* =========================================================
+   MENU PETUGAS — KARTU WARNA-WARNI
+   Tidak mengubah fungsi tombol maupun scanner.
+   Tombol STOP SCANNER sengaja tidak dibuat.
+   ========================================================= */
+
+#menuDrawer{
+  background:#ffffff !important;
+  border:1px solid #e2e8f0 !important;
+  box-shadow:0 16px 35px rgba(15,23,42,.14) !important;
+}
+
+#menuDrawer > button,
+#menuDrawer > .dashboard-harian-menu{
+  border:0 !important;
+  border-radius:12px !important;
+  margin:5px 0 !important;
+  min-height:44px !important;
+  box-shadow:0 2px 5px rgba(15,23,42,.08) !important;
+  transition:transform .15s ease, filter .15s ease !important;
+}
+
+#menuDrawer > button:hover,
+#menuDrawer > .dashboard-harian-menu:hover{
+  filter:brightness(.97) !important;
+  transform:translateY(-1px) !important;
+}
+
+/* 1. Scan Absen — biru */
+#menuDrawer > button:nth-child(2){
+  background:linear-gradient(135deg,#dbeafe,#bfdbfe) !important;
+  color:#1e3a8a !important;
+  border-left:5px solid #2563eb !important;
+}
+
+/* 2. Absen Manual — hijau */
+#menuDrawer > button:nth-child(3){
+  background:linear-gradient(135deg,#dcfce7,#bbf7d0) !important;
+  color:#166534 !important;
+  border-left:5px solid #16a34a !important;
+}
+
+/* 3. Tindak Lanjut — oranye */
+#menuDrawer > button:nth-child(4){
+  background:linear-gradient(135deg,#ffedd5,#fed7aa) !important;
+  color:#9a3412 !important;
+  border-left:5px solid #f97316 !important;
+}
+
+/* 4. Dashboard — ungu */
+#menuDrawer > button:nth-child(5){
+  background:linear-gradient(135deg,#ede9fe,#ddd6fe) !important;
+  color:#5b21b6 !important;
+  border-left:5px solid #7c3aed !important;
+}
+
+/* 5. Dashboard Harian — cyan */
+#menuDrawer > .dashboard-harian-menu{
+  background:linear-gradient(135deg,#cffafe,#a5f3fc) !important;
+  color:#155e75 !important;
+  border-left:5px solid #0891b2 !important;
+  padding:8px !important;
+}
+
+#menuDrawer > .dashboard-harian-menu .dashboard-harian-title{
+  color:#155e75 !important;
+  font-weight:800 !important;
+}
+
+#menuDrawer > .dashboard-harian-menu .dashboard-harian-select{
+  background:#ffffff !important;
+  border:1px solid #67e8f9 !important;
+  color:#164e63 !important;
+  border-radius:9px !important;
+}
+
+/* 6. Hari Libur / Sekolah — kuning */
+#menuDrawer > button:nth-child(7){
+  background:linear-gradient(135deg,#fef3c7,#fde68a) !important;
+  color:#854d0e !important;
+  border-left:5px solid #eab308 !important;
+}
+
+/* Ikon tetap jelas dan tidak ikut mengecil */
+#menuDrawer > button{
+  font-weight:800 !important;
+  text-align:left !important;
+}
+
+/* Judul menu */
+#menuDrawer .menu-hint{
+  color:#94a3b8 !important;
+  font-weight:800 !important;
+  letter-spacing:.08em !important;
+}
+
+/* HP: tetap kompak */
+@media (max-width:700px){
+  #menuDrawer > button,
+  #menuDrawer > .dashboard-harian-menu{
+    min-height:40px !important;
+    margin:4px 0 !important;
+    border-radius:10px !important;
+  }
+
+  #menuDrawer > button{
+    padding:7px 8px !important;
+    font-size:11.5px !important;
+  }
+
+  #menuDrawer > .dashboard-harian-menu{
+    padding:6px !important;
+  }
+}
+</style>
+
+<style id="MENU_QR_LAPORAN_TAMBAHAN">
+/* =========================================================
+   MENU TAMBAHAN — KARTU QR CODE + LAPORAN
+   ========================================================= */
+#menuDrawer > .qr-button,
+#menuDrawer > .laporan-button{
+  border:0 !important;
+  border-radius:12px !important;
+  margin:5px 0 !important;
+  min-height:44px !important;
+  box-shadow:0 2px 5px rgba(15,23,42,.08) !important;
+  font-weight:800 !important;
+  text-align:left !important;
+}
+#menuDrawer > .qr-button{
+  background:linear-gradient(135deg,#e0f2fe,#bae6fd) !important;
+  color:#075985 !important;
+  border-left:5px solid #0284c7 !important;
+}
+#menuDrawer > .laporan-button{
+  background:linear-gradient(135deg,#f3e8ff,#e9d5ff) !important;
+  color:#6b21a8 !important;
+  border-left:5px solid #9333ea !important;
+}
+#menuDrawer > .qr-button:hover,
+#menuDrawer > .laporan-button:hover{
+  filter:brightness(.97) !important;
+  transform:translateY(-1px);
+}
+@media(max-width:700px){
+  #menuDrawer > .qr-button,
+  #menuDrawer > .laporan-button{
+    min-height:40px !important;
+    margin:4px 0 !important;
+    padding:7px 8px !important;
+    font-size:11.5px !important;
+  }
+}
+</style>
+
+<style id="DASHBOARD_HARIAN_SINGLE_MENU">
+.dashboard-harian-single{
+  display:block !important;
+  width:100% !important;
+  box-sizing:border-box !important;
+  text-align:left !important;
+  cursor:pointer !important;
+}
+</style>
+
+<style id="TINDAK_LANJUT_PAGE_FIX">
+/* =========================================================
+   TINDAK LANJUT — HALAMAN DALAM INDEX (BUKAN TAB BARU)
+   Tidak mengubah fungsi menu/absensi lain.
+   ========================================================= */
+#tindakLanjutPage{
+  display:none;
+  width:100%;
+  min-height:calc(100dvh - 40px);
+  padding:18px;
+  background:#f8fafc;
+  border-radius:16px;
+  box-sizing:border-box;
+}
+#tindakLanjutPage .tindak-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:16px;
+  flex-wrap:wrap;
+}
+#tindakLanjutPage .tindak-title{
+  margin:0;
+  color:#0b3b82;
+  font-size:22px;
+  font-weight:800;
+}
+#tindakLanjutPage .tindak-subtitle{
+  margin:5px 0 0;
+  color:#64748b;
+  font-size:12px;
+}
+#tindakLanjutPage .tindak-back{
+  border:0;
+  border-radius:10px;
+  padding:10px 15px;
+  background:#e2e8f0;
+  color:#334155;
+  font-weight:800;
+  cursor:pointer;
+}
+#tindakLanjutPage .tindak-back:hover{background:#cbd5e1}
+#tindakLanjutPage .tindak-content{
+  width:100%;
+}
+#tindakLanjutPage .tindak-content > .info{
+  background:#fff;
+  border:1px solid #dbe4ef;
+  border-radius:12px;
+  padding:18px;
+  text-align:center;
+  color:#64748b;
+}
+#tindakLanjutPage .tindak-card{
+  background:#fff3cd;
+  border:1px solid #ffe69c;
+  border-left:5px solid #f59e0b;
+  border-radius:12px;
+  padding:15px;
+  margin:10px 0;
+  box-shadow:0 3px 12px rgba(15,40,80,.06);
+}
+#tindakLanjutPage .tindak-button{
+  border:0;
+  border-radius:9px;
+  padding:9px 13px;
+  background:#16a05d;
+  color:#fff;
+  font-weight:800;
+  cursor:pointer;
+}
+#tindakLanjutPage .tindak-button:hover{background:#12834d}
+@media(max-width:700px){
+  #tindakLanjutPage{padding:12px;min-height:100dvh;border-radius:0}
+  #tindakLanjutPage .tindak-title{font-size:19px}
+  #tindakLanjutPage .tindak-header{align-items:flex-start}
+}
+</style>
+
+<style id="creator-support-style">
+.creator-footer{margin:18px auto 24px;max-width:1200px;padding:14px 20px;text-align:center;color:#64748b;font-size:11px;line-height:1.6}.creator-footer strong{color:#334155}.support-btn{border:0;background:none;color:#0b3b82;font-weight:800;cursor:pointer;padding:2px 4px}.support-modal{display:none;position:fixed;inset:0;background:#0f172a88;z-index:99999;align-items:center;justify-content:center;padding:18px}.support-modal.show{display:flex}.support-box{width:min(430px,100%);background:#fff;border-radius:18px;padding:22px;box-shadow:0 20px 60px #0004;text-align:left}.support-box h3{margin:0 0 7px;color:#0b3b82}.support-box p{font-size:12px;line-height:1.6;color:#475569}.support-item{background:#f8fafc;border:1px solid #e2e8f0;border-radius:11px;padding:10px 12px;margin-top:9px}.support-item b{display:block;font-size:11px;color:#64748b;margin-bottom:3px}.support-item span{font-weight:800;color:#172033;word-break:break-word}.support-actions{text-align:right;margin-top:14px}.support-close{border:0;border-radius:9px;padding:9px 14px;background:#e2e8f0;color:#172033;font-weight:800;cursor:pointer}
+</style>
+
+<style id="offline-first-style">
+  #connectionStatus{display:flex;align-items:center;gap:9px;margin:0 0 14px;padding:9px 12px;border-radius:12px;font-size:12px;font-weight:800;border:1px solid #dbe4ee;background:#f8fafc;color:#334155}
+  #connectionStatus .dot{width:11px;height:11px;border-radius:50%;background:#94a3b8;flex:0 0 11px}
+  #connectionStatus.online .dot{background:#16a34a;box-shadow:0 0 0 4px #16a34a22}
+  #connectionStatus.offline .dot{background:#94a3b8}
+  #connectionStatus.syncing .dot{background:#f59e0b;box-shadow:0 0 0 4px #f59e0b22}
+  #offlineQueueInfo{font-size:11px;font-weight:700;color:#64748b;margin:-7px 0 12px;display:none}
+  html.offline-mode .offline-hide{display:none!important}
+  html.offline-mode .admin-login-button{display:none!important}
+  html.offline-mode #loginArea{display:none!important}
+  html.offline-mode #scannerArea{display:block!important}
+  html.offline-mode .scanner-logout-button{display:none!important}
+  html.online-mode #offlineQueueInfo{display:block}
+</style>
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+  <div id="connectionStatus" class="offline" role="status" aria-live="polite">
+    <span class="dot"></span><span id="connectionStatusText">Memeriksa koneksi...</span>
+  </div>
+  <div id="offlineQueueInfo"></div>
+
+
+  <!-- ================================================= -->
+  <!-- LOGIN -->
+  <!-- ================================================= -->
+
+  <div
+    id="loginArea"
+    class="login-area"
+  >
+
+    <div class="login-brand">
+      <img
+        class="school-logo"
+        src=""
+        id="schoolLogo" alt="Logo sekolah"
+        style="display:none"
+      >      <div class="school-name" id="schoolName">Memuat nama sekolah...</div>
+      <div class="school-subtitle">SISTEM ABSENSI SISWA</div>
+      <div class="login-divider"></div>
+      <h2>Login Guru Piket</h2>
+      <p>Masuk untuk mengakses scanner absensi.</p>
+    </div>
+
+    <input
+      type="tel"
+      id="noHp"
+      placeholder="Nomor HP"
+      autocomplete="tel"
+    >
+
+    <button
+      type="button"
+      onclick="loginPetugas()"
+    >
+      MASUK
+    </button>
+
+    <button
+      type="button"
+      class="admin-login-button"
+      onclick="bukaAdmin()"
+      style="background:#eef4fb;color:#0b3b82;font-weight:800"
+    >
+      ⚙️ LOGIN ADMIN
+    </button>
+
+    <div
+      id="loginHasil"
+      class="hasil"
+    ></div>
+
+  </div>
+
+
+  <!-- ================================================= -->
+  <!-- SCANNER AREA -->
+  <!-- ================================================= -->
+
+  <div
+    id="scannerArea"
+    class="scanner-area"
+  >
+
+    <h2>📷 Scanner Absensi</h2>
+
+    <!-- Informasi petugas -->
+
+    <div
+      id="petugasInfo"
+      class="info"
+    ></div>
+
+    <div
+      id="statusHariIni"
+      class="info"
+    >
+      Memeriksa status hari...
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- HAMBURGER MENU -->
+    <!-- ================================================= -->
+
+    <div id="menuArea" class="menu">
+
+      <button
+        type="button"
+        class="menu-toggle"
+        aria-label="Buka menu"
+        aria-expanded="false"
+        onclick="toggleMenu()"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <div id="menuDrawer" class="menu-drawer">
+
+        <div class="menu-hint">Menu Petugas</div>
+
+        <button
+          type="button"
+          onclick="mulaiScanner(); closeMenu();"
+        >
+          📷 &nbsp; SCAN ABSEN
+        </button>
+
+        <button
+          type="button"
+          onclick="tampilkanManual(); closeMenu();" class="offline-hide"
+        >
+          📝 &nbsp; ABSEN MANUAL
+        </button>
+
+        <button
+          type="button"
+          onclick="bukaTindakLanjut(); closeMenu();" class="offline-hide"
+        >
+          ⚠️ &nbsp; TINDAK LANJUT
+        </button>
+
+        <button
+          type="button"
+          class="dashboard-button offline-hide"
+          onclick="bukaDashboard(); closeMenu();"
+        >
+          📊 &nbsp; DASHBOARD
+        </button>
+
+        <button
+          type="button"
+          class="dashboard-harian-menu dashboard-harian-single offline-hide"
+          onclick="bukaDashboardHarian();"
+        >
+          📅 &nbsp; DASHBOARD HARIAN
+        </button>
+
+        <button
+          type="button"
+          class="libur-button offline-hide"
+          onclick="bukaPengaturanLibur();"
+        >
+          🗓️ &nbsp; HARI LIBUR / SEKOLAH
+        </button>
+
+        <button
+          type="button"
+          class="qr-button offline-hide"
+          onclick="bukaKartuQRCode(); closeMenu();"
+        >
+          🪪 &nbsp; KARTU QR CODE
+        </button>
+
+        <button
+          type="button"
+          class="laporan-button offline-hide"
+          onclick="bukaLaporan(); closeMenu();"
+        >
+          📄 &nbsp; LAPORAN
+        </button>
+
+        <div
+          id="liburArea"
+          class="libur-area"
+        ></div>
+
+        <div id="tindakLanjutArea"></div>
+
+      </div>
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- HALAMAN TINDAK LANJUT (DALAM INDEX YANG SAMA) -->
+    <!-- ================================================= -->
+    <section id="tindakLanjutPage">
+      <div class="tindak-header">
+        <div>
+          <h2 class="tindak-title">⚠️ Siswa Perlu Tindak Lanjut</h2>
+          <div class="tindak-subtitle">Menampilkan siswa yang memenuhi kriteria tindak lanjut.</div>
+        </div>
+        <button type="button" class="tindak-back" onclick="kembaliDariTindakLanjut()">← KEMBALI</button>
+      </div>
+      <div id="tindakLanjutPageContent" class="tindak-content">
+        <div class="info">Memuat data tindak lanjut...</div>
+      </div>
+    </section>
+
+    <!-- Scanner -->
+
+    <div id="reader"></div>
+
+
+    <!-- Hasil scan -->
+
+    <div
+      id="hasil"
+      class="hasil"
+    >
+      Siap melakukan scan.
+    </div>
+
+    <button
+      type="button"
+      class="scanner-logout-button"
+      onclick="keluarAplikasi();"
+    >
+      🚪 &nbsp; KELUAR
+    </button>
+
+  </div>
+
+
+  <!-- ================================================= -->
+  <!-- ABSEN MANUAL -->
+  <!-- ================================================= -->
+
+  <div
+    id="manualArea"
+    class="manual-area"
+  >
+
+    <h2>📝 Absen Manual</h2>
+
+
+    <!-- Informasi petugas -->
+
+    <div
+      id="manualPetugas"
+      class="info"
+    ></div>
+
+
+    <p>
+      Cari nama atau ID siswa.
+    </p>
+
+
+    <input
+      type="text"
+      id="manualCari"
+      placeholder="Cari nama atau ID siswa"
+      autocomplete="off"
+      oninput="cariSiswaManual()"
+    >
+
+
+    <div
+      id="hasilPencarianManual"
+    ></div>
+
+
+    <input
+      type="hidden"
+      id="manualKode"
+    >
+
+
+    <p>
+      Pilih status:
+    </p>
+
+
+    <button
+      type="button"
+      onclick="simpanManual('SAKIT')"
+    >
+      SAKIT
+    </button>
+
+
+    <button
+      type="button"
+      onclick="simpanManual('IZIN')"
+    >
+      IZIN
+    </button>
+
+
+    <button
+      type="button"
+      onclick="simpanManual('KEGIATAN')"
+    >
+      KEGIATAN SEKOLAH
+    </button>
+
+
+    <textarea
+      id="manualKeterangan"
+      placeholder="Keterangan (opsional)"
+    ></textarea>
+
+
+    <div
+      id="manualHasil"
+      class="hasil"
+    ></div>
+
+
+    <button
+      type="button"
+      onclick="kembaliKeScanner()"
+    >
+      ← KEMBALI KE SCANNER
+    </button>
+
+  </div>
+
+
+</div>
+
+
+<script>
+
+
+  // =====================================================
+  // HAMBURGER MENU
+  // =====================================================
+
+  function toggleMenu() {
+    const drawer = document.getElementById("menuDrawer");
+    const toggle = document.querySelector(".menu-toggle");
+
+    if (!drawer || !toggle) return;
+
+    const open = drawer.classList.toggle("open");
+
+    toggle.setAttribute(
+      "aria-expanded",
+      open ? "true" : "false"
+    );
+  }
+
+  function closeMenu() {
+    const drawer = document.getElementById("menuDrawer");
+    const toggle = document.querySelector(".menu-toggle");
+
+    if (drawer) {
+      drawer.classList.remove("open");
+    }
+
+    if (toggle) {
+      toggle.setAttribute("aria-expanded", "false");
+    }
+  }
+
+  document.addEventListener("click", function(event) {
+    const menu = document.getElementById("menuArea");
+    const drawer = document.getElementById("menuDrawer");
+
+    if (
+      menu &&
+      drawer &&
+      !menu.contains(event.target)
+    ) {
+      closeMenu();
+    }
+  });
+
+
+
+  // =====================================================
+  // KELUAR APLIKASI
+  // =====================================================
+
+  function keluarAplikasi() {
+    closeMenu();
+
+    const yakin = confirm(
+      "Apakah Anda yakin ingin keluar dari aplikasi?"
+    );
+
+    if (!yakin) return;
+
+    try {
+      if (scannerAktif) {
+        scannerAktif.clear().catch(function(){});
+        scannerAktif = null;
+      }
+    } catch (e) {}
+
+    try {
+      sessionStorage.removeItem("absensiPetugas");
+      localStorage.removeItem("absensiPetugas");
+    } catch (e) {}
+
+    // Jika halaman ini adalah tab scanner, tutup tab tersebut.
+    const params = new URLSearchParams(window.location.search);
+
+    if (
+      params.get("mode") === "scanner" ||
+      params.get("menungguLogin") === "1"
+    ) {
+      window.close();
+
+      // Browser tertentu tidak mengizinkan window.close().
+      // Fallback: kembali ke halaman login tanpa menampilkan scanner.
+      setTimeout(function(){
+        window.location.href = window.location.pathname;
+      }, 300);
+      return;
+    }
+
+    // Jika di tab utama, kembali ke halaman login.
+    document.documentElement.classList.remove("scanner-mode");
+    document.documentElement.classList.remove("manual-mode");
+
+    document.getElementById("scannerArea").style.display = "none";
+    document.getElementById("manualArea").style.display = "none";
+    document.getElementById("loginArea").style.display = "";
+
+    window.location.reload();
+  }
+
+  // =====================================================
+  // URL WEB APP GOOGLE APPS SCRIPT
+  // =====================================================
+
+  const GAS_URL = "https://script.google.com/macros/s/AKfycby-YKShDHh90IuYDeODd0OAIFUQy-Hk3DiEkyMXtx5Y465lA4C1fpmN4qYjgQgKDTKO/exec";
+
+  function bukaAdmin() {
+    if (!isAppOnline()) { alert("Fitur ini membutuhkan koneksi internet."); return; }
+    try { localStorage.setItem("absensiHalamanAwal", window.location.href); } catch(e) {}
+    const kembali = encodeURIComponent(window.location.href);
+    window.open(GAS_URL + "?halaman=admin&kembali=" + kembali, "_blank");
+  }
+
+  function muatIdentitasSekolah() {
+    const callbackName = "schoolSettingsCallback" + Date.now();
+    window[callbackName] = function(data) {
+      if (data && data.berhasil) {
+        const name = document.getElementById("schoolName");
+        if (name) name.textContent = data.namaSekolah || "Sistem Absensi Siswa";
+        const logo = document.getElementById("schoolLogo");
+        if (logo && data.logoData) { logo.src = data.logoData; logo.style.display = "block"; }
+        document.title = (data.namaSekolah || "Absensi Sekolah") + " — Absensi";
+      }
+      bersihkanCallback("schoolSettingsApi", callbackName);
+    };
+
+    const script = document.createElement("script");
+    script.id = "schoolSettingsApi";
+    script.src = GAS_URL + "?aksi=schoolSettings&callback=" + callbackName;
+    document.body.appendChild(script);
+  }
+
+
+  // =====================================================
+  // DATA PETUGAS
+  // =====================================================
+
+  let petugas = null;
+
+  // Tab scanner dibuka langsung dari klik MASUK agar browser tidak memblokir popup.
+  let scannerTab = null;
+
+  const LOGIN_SESSION_KEY = "absensiPetugasSession";
+  const LOGIN_SESSION_MAX_AGE = 8 * 60 * 60 * 1000;
+
+
+  // =====================================================
+  // OBJEK SCANNER
+  // =====================================================
+
+  let scannerAktif = null;
+  let scannerSedangDibuat = false;
+
+
+  // =====================================================
+  // MEMBERSIHKAN CALLBACK
+  // =====================================================
+
+  function bersihkanCallback(
+    scriptId,
+    callbackName
+  ) {
+
+    delete window[callbackName];
+
+    const script =
+      document.getElementById(scriptId);
+
+    if (script) {
+      script.remove();
+    }
+
+  }
+
+
+  // =====================================================
+  // SESSION + TAB SCANNER
+  // =====================================================
+
+  function simpanSessionPetugas(data) {
+    try {
+      localStorage.setItem(
+        LOGIN_SESSION_KEY,
+        JSON.stringify({
+          idPetugas: data.idPetugas,
+          nama: data.nama,
+          waktu: Date.now()
+        })
+      );
+    } catch (e) {
+      console.warn("Session lokal tidak dapat disimpan.", e);
+    }
+  }
+
+  function ambilSessionPetugas() {
+    try {
+      const raw = localStorage.getItem(LOGIN_SESSION_KEY);
+      if (!raw) return null;
+
+      const data = JSON.parse(raw);
+
+      if (
+        !data ||
+        !data.idPetugas ||
+        !data.nama ||
+        Date.now() - Number(data.waktu || 0) > LOGIN_SESSION_MAX_AGE
+      ) {
+        localStorage.removeItem(LOGIN_SESSION_KEY);
+        return null;
+      }
+
+      return data;
+    } catch (e) {
+      localStorage.removeItem(LOGIN_SESSION_KEY);
+      return null;
+    }
+  }
+
+  function bukaTabScanner() {
+    const url =
+      window.location.href.split("#")[0].split("?")[0] +
+      "?mode=scanner";
+
+    if (scannerTab && !scannerTab.closed) {
+      scannerTab.location.href = url;
+      scannerTab.focus();
+      return;
+    }
+
+    scannerTab = window.open(url, "_blank");
+
+    if (!scannerTab) {
+      alert(
+        "Tab scanner tidak dapat dibuka. Silakan izinkan pop-up untuk situs absensi ini."
+      );
+    }
+  }
+
+  function tampilkanScannerDenganPetugas(data) {
+    petugas = {
+      idPetugas: data.idPetugas,
+      nama: data.nama
+    };
+
+    // Login sekarang berganti menjadi scanner pada halaman yang sama.
+    // Class ini wajib dipasang agar CSS scanner/mobile ikut aktif.
+    document.documentElement.classList.add("scanner-mode");
+    document.documentElement.classList.remove("manual-mode");
+
+    document.getElementById("loginArea").style.display = "none";
+    document.getElementById("scannerArea").style.display = "block";
+
+    document.getElementById("petugasInfo").innerHTML =
+      "<b>Petugas:</b> " +
+      escapeHtmlLogin(data.nama) +
+      "<br>" +
+      "<b>ID:</b> " +
+      escapeHtmlLogin(data.idPetugas);
+
+    cekStatusHariIni();
+    mulaiScanner();
+  }
+
+  function escapeHtmlLogin(teks) {
+    return String(teks == null ? "" : teks)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  function initModeScanner() {
+    const params = new URLSearchParams(window.location.search);
+
+    if (params.get("mode") !== "scanner") {
+      return false;
+    }
+
+    // Tab ini khusus scanner. Jangan pernah menampilkan halaman login di sini.
+    document.documentElement.classList.add("scanner-mode");
+    document.getElementById("loginArea").style.display = "none";
+    document.getElementById("scannerArea").style.display = "block";
+
+    const session = ambilSessionPetugas();
+
+    if (!session) {
+      return false;
+    }
+
+    tampilkanScannerDenganPetugas(session);
+    return true;
+  }
+
+  function tungguLoginDiTabScanner() {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("menungguLogin") !== "1") return;
+
+    // Tetap murni halaman scanner; login berada di tab asal.
+    document.documentElement.classList.add("scanner-mode");
+    document.getElementById("loginArea").style.display = "none";
+    document.getElementById("scannerArea").style.display = "block";
+
+    const timer = setInterval(function() {
+      const session = ambilSessionPetugas();
+      if (!session) return;
+
+      clearInterval(timer);
+      history.replaceState({}, "", window.location.pathname + "?mode=scanner");
+      tampilkanScannerDenganPetugas(session);
+    }, 400);
+
+    setTimeout(function() {
+      clearInterval(timer);
+    }, 30000);
+  }
+
+
+  // =====================================================
+  // LOGIN PETUGAS
+  // =====================================================
+
+  function loginPetugas() {
+
+    const input = document.getElementById("noHp");
+    const hasil = document.getElementById("loginHasil");
+    const noHp = input.value.trim();
+
+    if (!noHp) {
+      hasil.innerHTML = "⚠️ Masukkan nomor HP.";
+      return;
+    }
+
+    hasil.innerHTML = "Memeriksa akun...";
+
+    const callbackName = "loginCallback" + Date.now();
+
+    window[callbackName] = function(data) {
+
+      if (data && data.berhasil === true) {
+
+        simpanSessionPetugas(data);
+
+        // Login dan scanner sekarang berada di halaman yang sama.
+        tampilkanScannerDenganPetugas(data);
+
+        hasil.innerHTML = "✅ Login berhasil.";
+
+      } else {
+
+        hasil.innerHTML =
+          "❌ " +
+          (
+            data && data.pesan
+              ? data.pesan
+              : "Login gagal."
+          );
+      }
+
+      bersihkanCallback("loginApi", callbackName);
+    };
+
+    const script = document.createElement("script");
+
+    script.id = "loginApi";
+
+    script.src =
+      GAS_URL +
+      "?aksi=login" +
+      "&noHp=" +
+      encodeURIComponent(noHp) +
+      "&callback=" +
+      callbackName;
+
+    document.body.appendChild(script);
+  }
+
+
+  // =====================================================
+  // AUTO START TAB SCANNER
+  // =====================================================
+
+  document.addEventListener("DOMContentLoaded", function() {
+    registerOfflineFirst();
+    muatIdentitasSekolah();
+    initModeScanner();
+    tungguLoginDiTabScanner();
+    updateConnectionUI();
+    if (navigator.onLine) {
+      cekKoneksiServer();
+    }
+  });
+
+
+  // =====================================================
+  // OFFLINE-FIRST ENGINE
+  // =====================================================
+  const OFFLINE_DB_NAME = "absensi-offline-first-v1";
+  const OFFLINE_DB_VERSION = 1;
+  const OFFLINE_MASTER_KEY = "MASTER_SISWA";
+  const OFFLINE_PENDING_STORE = "PENDING";
+  let offlineDbPromise = null;
+  let offlineSyncRunning = false;
+  let serverOnline = null;
+  function isAppOnline(){ return navigator.onLine && serverOnline !== false; }
+
+  function registerOfflineFirst() {
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("./sw.js").catch(function(err){
+        console.warn("Service Worker gagal didaftarkan:", err);
+      });
+    }
+    window.addEventListener("online", function(){
+      serverOnline = null;
+      updateConnectionUI();
+      cekKoneksiServer();
+    });
+    window.addEventListener("offline", function(){
+      serverOnline = false;
+      updateConnectionUI();
+    });
+  }
+
+  function updateConnectionUI() {
+    const root = document.documentElement;
+    const bar = document.getElementById("connectionStatus");
+    const text = document.getElementById("connectionStatusText");
+    const online = isAppOnline();
+    root.classList.toggle("offline-mode", !online);
+    root.classList.toggle("online-mode", online);
+    if (bar) {
+      bar.classList.remove("online","offline","syncing");
+      bar.classList.add(online ? "online" : "offline");
+    }
+    if (text) text.textContent = online ? "ONLINE — fitur administrasi tersedia" : "OFFLINE — hanya Scan QR yang tersedia";
+
+    if (!online) {
+      const scanner = document.getElementById("scannerArea");
+      const login = document.getElementById("loginArea");
+      if (scanner) scanner.style.display = "block";
+      if (login) login.style.display = "none";
+      const info = document.getElementById("petugasInfo");
+      if (info) info.innerHTML = "<b>Mode:</b> Offline — scan tanpa login. Data disimpan di perangkat dan akan disinkronkan saat online.";
+      setTimeout(function(){ if (!scannerAktif) mulaiScanner(); }, 300);
+    } else if (!petugas && new URLSearchParams(window.location.search).get("mode") !== "scanner") {
+      const scanner = document.getElementById("scannerArea");
+      const login = document.getElementById("loginArea");
+      if (scanner) scanner.style.display = "none";
+      if (login) login.style.display = "";
+    }
+    updateOfflineQueueInfo();
+  }
+
+  function cekKoneksiServer(){
+    if (!navigator.onLine) { serverOnline=false; updateConnectionUI(); return; }
+    serverOnline=null;
+    const bar=document.getElementById("connectionStatus"), text=document.getElementById("connectionStatusText");
+    if(bar){bar.classList.remove("online","offline");bar.classList.add("syncing");}
+    if(text) text.textContent="MEMERIKSA KONEKSI SERVER...";
+    jsonpRequest("schoolSettings", {}, 7000).then(function(data){
+      serverOnline=!!(data && data.berhasil);
+      if(serverOnline){ refreshMasterOffline(); syncPendingOffline(); }
+      updateConnectionUI();
+    }).catch(function(){
+      serverOnline=false;
+      updateConnectionUI();
+    });
+  }
+
+  function openOfflineDb() {
+    if (offlineDbPromise) return offlineDbPromise;
+    offlineDbPromise = new Promise(function(resolve, reject){
+      const req = indexedDB.open(OFFLINE_DB_NAME, OFFLINE_DB_VERSION);
+      req.onupgradeneeded = function(e){
+        const db = e.target.result;
+        if (!db.objectStoreNames.contains("MASTER")) db.createObjectStore("MASTER");
+        if (!db.objectStoreNames.contains(OFFLINE_PENDING_STORE)) db.createObjectStore(OFFLINE_PENDING_STORE, {keyPath:"transactionId"});
+      };
+      req.onsuccess = function(){ resolve(req.result); };
+      req.onerror = function(){ reject(req.error); };
+    });
+    return offlineDbPromise;
+  }
+
+  function idbPut(storeName, key, value) {
+    return openOfflineDb().then(function(db){
+      return new Promise(function(resolve,reject){
+        const tx=db.transaction(storeName,"readwrite");
+        tx.objectStore(storeName).put(value,key);
+        tx.oncomplete=function(){resolve(true)};
+        tx.onerror=function(){reject(tx.error)};
+      });
+    });
+  }
+
+  function idbGet(storeName, key) {
+    return openOfflineDb().then(function(db){
+      return new Promise(function(resolve,reject){
+        const tx=db.transaction(storeName,"readonly");
+        const req=tx.objectStore(storeName).get(key);
+        req.onsuccess=function(){resolve(req.result)};
+        req.onerror=function(){reject(req.error)};
+      });
+    });
+  }
+
+  function idbGetAll(storeName) {
+    return openOfflineDb().then(function(db){
+      return new Promise(function(resolve,reject){
+        const tx=db.transaction(storeName,"readonly");
+        const req=tx.objectStore(storeName).getAll();
+        req.onsuccess=function(){resolve(req.result||[])};
+        req.onerror=function(){reject(req.error)};
+      });
+    });
+  }
+
+  function idbDelete(storeName,key) {
+    return openOfflineDb().then(function(db){
+      return new Promise(function(resolve,reject){
+        const tx=db.transaction(storeName,"readwrite");
+        tx.objectStore(storeName).delete(key);
+        tx.oncomplete=function(){resolve(true)};
+        tx.onerror=function(){reject(tx.error)};
+      });
+    });
+  }
+
+  function jsonpRequest(action, params, timeoutMs) {
+    return new Promise(function(resolve,reject){
+      if (!GAS_URL || GAS_URL.indexOf("TEMPEL_URL") === 0) return reject(new Error("URL Web App GAS belum diatur."));
+      const cb = "offlineFirstCb" + Date.now() + Math.floor(Math.random()*10000);
+      let timer;
+      window[cb]=function(data){ clearTimeout(timer); delete window[cb]; const old=document.getElementById(cb); if(old) old.remove(); resolve(data); };
+      const script=document.createElement("script"); script.id=cb;
+      let q="?aksi="+encodeURIComponent(action)+"&callback="+encodeURIComponent(cb);
+      Object.keys(params||{}).forEach(function(k){ q += "&"+encodeURIComponent(k)+"="+encodeURIComponent(params[k]==null?"":params[k]); });
+      script.src=GAS_URL+q;
+      script.onerror=function(){ clearTimeout(timer); delete window[cb]; script.remove(); reject(new Error("Server tidak dapat dihubungi.")); };
+      timer=setTimeout(function(){ delete window[cb]; script.remove(); reject(new Error("Waktu koneksi habis.")); }, timeoutMs||8000);
+      document.body.appendChild(script);
+    });
+  }
+
+  function refreshMasterOffline() {
+    if (!navigator.onLine) return;
+    jsonpRequest("getMasterSiswa", {}, 10000).then(function(data){
+      if (data && data.berhasil && Array.isArray(data.students)) {
+        return idbPut("MASTER", OFFLINE_MASTER_KEY, data.students).then(function(){ updateOfflineQueueInfo(); });
+      }
+    }).catch(function(err){ console.warn("Master offline belum diperbarui:",err.message); });
+  }
+
+  function cariMasterOffline(kode) {
+    return idbGet("MASTER", OFFLINE_MASTER_KEY).then(function(list){
+      list=Array.isArray(list)?list:[];
+      const k=String(kode||"").trim();
+      return list.find(function(s){
+        return String(s.barcode||"").trim()===k || (!s.barcode && String(s.idSiswa||"").trim()===k);
+      }) || null;
+    });
+  }
+
+  function simpanScanOffline(kode,lokasi) {
+    const hasil=document.getElementById("hasil");
+    const waktu=new Date().toISOString();
+    cariMasterOffline(kode).then(function(siswa){
+      if (!siswa) {
+        hasil.innerHTML="<b>❌ SISWA TIDAK DITEMUKAN</b><br><br>Kode: <b>"+escapeHtmlLogin(kode)+"</b><br><small>Pastikan master siswa sudah pernah disinkronkan saat online.</small>";
+        setTimeout(mulaiScanner,3000); return;
+      }
+      return idbGetAll(OFFLINE_PENDING_STORE).then(function(items){
+        const dup=items.some(function(x){ return x.idSiswa===siswa.idSiswa && x.mode===modeOfflineFromTime(waktu) && x.tanggal===waktu.slice(0,10); });
+        if(dup){
+          hasil.innerHTML="<b>⚠️ SUDAH TERCATAT OFFLINE</b><br><br>"+escapeHtmlLogin(siswa.nama)+"<br><small>Transaksi masih menunggu sinkronisasi.</small>";
+          setTimeout(mulaiScanner,3000); return;
+        }
+        const tx={
+          transactionId:"OFF-"+Date.now()+"-"+Math.random().toString(36).slice(2,8),
+          waktu:waktu, tanggal:waktu.slice(0,10), kode:kode,
+          idSiswa:siswa.idSiswa, idPetugas:petugas ? petugas.idPetugas : "OFFLINE_DEVICE",
+          lokasi:{latitude:Number(lokasi.latitude),longitude:Number(lokasi.longitude),accuracy:Number(lokasi.accuracy||0)},
+          mode:modeOfflineFromTime(waktu), status:"PENDING"
+        };
+        return idbPut(OFFLINE_PENDING_STORE,tx.transactionId,tx).then(function(){
+          hasil.innerHTML="<b>✓ ABSENSI TERSIMPAN OFFLINE</b><br><br><strong>"+escapeHtmlLogin(siswa.nama)+"</strong><br>ID: "+escapeHtmlLogin(siswa.idSiswa)+"<br>Kelas: "+escapeHtmlLogin(siswa.kelas||"")+"<br><br>📦 Menunggu sinkronisasi internet.";
+          updateOfflineQueueInfo();
+          setTimeout(mulaiScanner,3000);
+        });
+      });
+    }).catch(function(err){
+      hasil.innerHTML="❌ Gagal menyimpan offline: "+escapeHtmlLogin(err.message);
+      setTimeout(mulaiScanner,3500);
+    });
+  }
+
+  function modeOfflineFromTime(iso) {
+    const d=new Date(iso), h=d.getHours(), m=d.getMinutes(), menit=h*60+m;
+    // Rentang default; server akan menjadi sumber aturan final saat sinkronisasi.
+    return menit < 11*60 ? "PAGI" : "SIANG";
+  }
+
+  function syncPendingOffline() {
+    if (!navigator.onLine || offlineSyncRunning) return;
+    if (!GAS_URL || GAS_URL.indexOf("TEMPEL_URL") === 0) return;
+    offlineSyncRunning=true;
+    updateOfflineQueueInfo(true);
+    idbGetAll(OFFLINE_PENDING_STORE).then(function(items){
+      if (!items.length) { offlineSyncRunning=false; updateConnectionUI(); return; }
+      let chain=Promise.resolve();
+      items.forEach(function(tx){
+        chain=chain.then(function(){
+          return jsonpRequest("syncOfflineBatch", {payload:JSON.stringify([tx])}, 15000).then(function(res){
+            if (res && res.berhasil && res.results && res.results[0] && (res.results[0].berhasil || res.results[0].sudahAbsen)) {
+              return idbDelete(OFFLINE_PENDING_STORE,tx.transactionId);
+            }
+            throw new Error((res && res.pesan) || "Sinkronisasi ditolak server.");
+          });
+        });
+      });
+      return chain;
+    }).then(function(){ offlineSyncRunning=false; updateConnectionUI(); })
+      .catch(function(err){ offlineSyncRunning=false; console.warn("Sinkronisasi tertunda:",err.message); updateOfflineQueueInfo(false); });
+  }
+
+  function updateOfflineQueueInfo(syncing) {
+    const el=document.getElementById("offlineQueueInfo"); if(!el) return;
+    idbGetAll(OFFLINE_PENDING_STORE).then(function(items){
+      const n=items.length;
+      if (syncing && n) { el.textContent="🟠 Menyinkronkan "+n+" data absensi..."; el.style.display="block"; return; }
+      el.textContent=n ? "📦 "+n+" data absensi menunggu sinkronisasi." : "✓ Semua data absensi sudah tersinkron.";
+      el.style.display="block";
+    }).catch(function(){ el.style.display="none"; });
+  }
+
+  // =====================================================
+  // STATUS HARI INI
+  // =====================================================
+
+  function cekStatusHariIni() {
+    const area =
+      document.getElementById("statusHariIni");
+
+    if (!area) {
+      return;
+    }
+
+    const tanggal =
+      tanggalHariIniLocal();
+
+    area.innerHTML =
+      "⏳ Memeriksa status hari ini...";
+
+    const callbackName =
+      "statusHariIniCallback" + Date.now();
+
+    window[callbackName] = function(data) {
+      if (!data || data.berhasil !== true) {
+        area.innerHTML =
+          "⚠️ Status hari belum dapat diperiksa.";
+        bersihkanCallback(
+          "statusHariIniApi",
+          callbackName
+        );
+        return;
+      }
+
+      const hari =
+        data.hari || "";
+
+      const isLibur =
+        data.libur === true ||
+        String(data.status || "").toUpperCase() === "LIBUR";
+
+      if (isLibur) {
+        area.innerHTML =
+          "🔴 <b>HARI LIBUR</b>" +
+          "<br>" +
+          escapeHtmlLibur(hari) +
+          "<br>" +
+          escapeHtmlLibur(
+            data.keterangan || "Hari libur"
+          );
+      } else {
+        area.innerHTML =
+          "🟢 <b>HARI SEKOLAH</b>" +
+          "<br>" +
+          escapeHtmlLibur(hari) +
+          "<br>" +
+          "Absensi berjalan normal.";
+      }
+
+      bersihkanCallback(
+        "statusHariIniApi",
+        callbackName
+      );
+    };
+
+    const script =
+      document.createElement("script");
+
+    script.id = "statusHariIniApi";
+
+    script.src =
+      GAS_URL +
+      "?aksi=cekLibur" +
+      "&tanggal=" +
+      encodeURIComponent(tanggal) +
+      "&callback=" +
+      callbackName;
+
+    document.body.appendChild(script);
+  }
+
+  // =====================================================
+  // CARI SISWA MANUAL
+  // =====================================================
+
+  function cariSiswaManual() {
+
+    const teks =
+      document
+        .getElementById("manualCari")
+        .value
+        .trim();
+
+
+    const hasil =
+      document.getElementById(
+        "hasilPencarianManual"
+      );
+
+
+    if (!teks) {
+
+      hasil.innerHTML = "";
+
+      document
+        .getElementById("manualKode")
+        .value = "";
+
+      return;
+
+    }
+
+
+    hasil.innerHTML =
+      "Mencari siswa...";
+
+
+    const callbackName =
+      "cariManualCallback" + Date.now();
+
+
+    window[callbackName] =
+      function(data) {
+
+        if (
+          !data ||
+          data.berhasil !== true ||
+          !Array.isArray(data.data) ||
+          data.data.length === 0
+        ) {
+
+          hasil.innerHTML =
+            "❌ Siswa tidak ditemukan.";
+
+          bersihkanCallback(
+            "cariManualApi",
+            callbackName
+          );
+
+          return;
+
+        }
+
+
+        let html = "";
+
+
+        data.data.forEach(
+          function(siswa) {
+
+            const id =
+              String(
+                siswa.idSiswa || ""
+              );
+
+            const nama =
+              String(
+                siswa.nama || ""
+              );
+
+
+            const kelas =
+              String(
+                siswa.kelas || ""
+              );
+
+
+            const idAman =
+              id
+                .replace(/\\/g, "\\\\")
+                .replace(/'/g, "\\'");
+
+
+            const namaAman =
+              nama
+                .replace(/\\/g, "\\\\")
+                .replace(/'/g, "\\'");
+
+
+            html +=
+
+              "<button " +
+
+              "type='button' " +
+
+              "class='pilihan-siswa' " +
+
+              "onclick=\"pilihSiswaManual('" +
+
+              idAman +
+
+              "','" +
+
+              namaAman +
+
+              "')\">" +
+
+              "<b>" +
+              id +
+              "</b> - " +
+              nama +
+
+              "<br>" +
+
+              "Kelas: " +
+              kelas +
+
+              "</button>";
+
+          }
+        );
+
+
+        hasil.innerHTML =
+          html;
+
+
+        bersihkanCallback(
+          "cariManualApi",
+          callbackName
+        );
+
+      };
+
+
+    const script =
+      document.createElement("script");
+
+
+    script.id =
+      "cariManualApi";
+
+
+    script.src =
+
+      GAS_URL +
+
+      "?aksi=cariManual" +
+
+      "&teks=" +
+      encodeURIComponent(teks) +
+
+      "&callback=" +
+      callbackName;
+
+
+    document.body.appendChild(script);
+
+  }
+
+
+  // =====================================================
+  // PILIH SISWA MANUAL
+  // =====================================================
+
+  function pilihSiswaManual(
+    idSiswa,
+    nama
+  ) {
+
+    document
+      .getElementById("manualKode")
+      .value =
+        idSiswa;
+
+
+    document
+      .getElementById("manualCari")
+      .value =
+        idSiswa +
+        " - " +
+        nama;
+
+
+    document
+      .getElementById(
+        "hasilPencarianManual"
+      )
+      .innerHTML =
+
+        "<b>✓ Siswa dipilih:</b><br>" +
+
+        idSiswa +
+        " - " +
+        nama;
+
+  }
+
+
+  // =====================================================
+  // MULAI SCANNER
+  // =====================================================
+
+  function mulaiScanner() {
+
+    
+    // Cegah dua instance Html5QrcodeScanner dibuat bersamaan.
+    if (scannerAktif || scannerSedangDibuat) {
+      return;
+    }
+    scannerSedangDibuat = true;
+
+if (!petugas && isAppOnline()) {
+      alert("Silakan login terlebih dahulu.");
+      scannerSedangDibuat = false;
+      return;
+    }
+
+
+    // Sembunyikan manual
+
+    document
+      .getElementById("manualArea")
+      .style.display =
+        "none";
+
+
+    // Tampilkan scanner
+
+    document
+      .getElementById("scannerArea")
+      .style.display =
+        "block";
+
+
+    // Bersihkan scanner lama
+
+    document
+      .getElementById("reader")
+      .innerHTML =
+        "";
+
+
+    document
+      .getElementById("hasil")
+      .innerHTML =
+        "Menyalakan kamera...";
+
+
+    try {
+
+      scannerAktif =
+        new Html5QrcodeScanner(
+
+          "reader",
+
+          {
+            fps: 10,
+
+            qrbox: {
+              width: 250,
+              height: 150
+            }
+          },
+
+          false
+
+        );
+
+
+      scannerAktif.render(
+
+        function(kode) {
+
+          if (scannerAktif) {
+
+            scannerAktif
+              .clear()
+              .catch(
+                function() {}
+              );
+
+          }
+
+
+          scannerAktif = null;
+          scannerSedangDibuat = false;
+
+          berhasilScan(kode);
+
+        },
+
+
+        function(error) {
+
+          scannerSedangDibuat = false;
+
+          // Error frame tidak ditampilkan
+
+        }
+
+      );
+
+
+    } catch (error) {
+
+      scannerSedangDibuat = false;
+
+      document
+        .getElementById("hasil")
+        .innerHTML =
+
+          "❌ Kamera tidak dapat dijalankan." +
+
+          "<br><br>" +
+
+          error.message;
+
+    }
+
+  }
+
+
+  // =====================================================
+  // HASIL SCAN
+  // =====================================================
+
+  function berhasilScan(kode) {
+
+    document
+      .getElementById("hasil")
+      .innerHTML =
+
+        "<b>✓ Barcode terbaca</b>" +
+
+        "<br><br>" +
+
+        "Kode: <b>" +
+        kode +
+        "</b>" +
+
+        "<br><br>" +
+
+        "Mencatat kehadiran...";
+
+
+    ambilLokasiDanCatat(kode);
+
+  }
+
+
+  // =====================================================
+  // CATAT KEHADIRAN
+  // =====================================================
+
+  function ambilLokasiDanCatat(kode) {
+
+    const hasil = document.getElementById("hasil");
+
+    if (!navigator.geolocation) {
+      hasil.innerHTML = "❌ Perangkat/browser tidak mendukung lokasi GPS. Absensi tidak dapat dicatat.";
+      setTimeout(mulaiScanner, 3000);
+      return;
+    }
+
+    hasil.innerHTML = "📍 Mengambil lokasi perangkat...";
+
+    navigator.geolocation.getCurrentPosition(
+      function(posisi) {
+        catatKehadiran(kode, {
+          latitude: posisi.coords.latitude,
+          longitude: posisi.coords.longitude,
+          accuracy: posisi.coords.accuracy
+        });
+      },
+      function(error) {
+        let pesan = "Lokasi tidak dapat diambil.";
+        if (error && error.code === 1) pesan = "Izin lokasi ditolak. Izinkan lokasi/GPS pada browser, lalu scan kembali.";
+        else if (error && error.code === 2) pesan = "Lokasi perangkat tidak tersedia. Aktifkan GPS/lokasi lalu coba lagi.";
+        else if (error && error.code === 3) pesan = "Pengambilan lokasi terlalu lama. Pastikan GPS aktif lalu coba lagi.";
+        hasil.innerHTML = "❌ " + pesan + "<br><small>Absensi tidak dicatat.</small>";
+        setTimeout(mulaiScanner, 3500);
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+    );
+  }
+
+  function catatKehadiran(kode, lokasi) {
+
+    if (!isAppOnline() || !petugas) {
+      simpanScanOffline(kode, lokasi);
+      return;
+    }
+
+    const callbackName =
+      "absenCallback" + Date.now();
+
+
+    window[callbackName] =
+      function(data) {
+
+        if (
+          data &&
+          data.berhasil === true
+        ) {
+
+          document
+            .getElementById("hasil")
+            .innerHTML =
+
+              "<b>✓ ABSENSI BERHASIL</b>" +
+
+              "<br><br>" +
+
+              "<strong>" +
+              (data.nama || "") +
+              "</strong>" +
+
+              "<br>" +
+
+              "ID: " +
+              (data.idSiswa || "") +
+
+              "<br>" +
+
+              "Kelas: " +
+              (data.kelas || "") +
+
+              "<br><br>" +
+
+              "Mode: <b>" +
+              (data.mode || "") +
+              "</b>" +
+
+              "<br>" +
+
+              "Jam: <b>" +
+              (data.jam || "") +
+              "</b>" +
+
+              "<br>" +
+
+              "Status: <b>" +
+              (data.status || "") +
+              "</b>" +
+
+              "<br>" +
+
+              "Apel: <b>" +
+              (data.apel || "") +
+              "</b>";
+
+        } else {
+
+          document
+            .getElementById("hasil")
+            .innerHTML =
+
+              "<b>❌ GAGAL</b>" +
+
+              "<br><br>" +
+
+              (
+                data &&
+                data.pesan
+                  ? data.pesan
+                  : "Terjadi kesalahan."
+              );
+
+        }
+
+
+        bersihkanCallback(
+          "absenApi",
+          callbackName
+        );
+
+
+        setTimeout(
+          function() {
+            mulaiScanner();
+          },
+          3000
+        );
+
+      };
+
+
+    const script =
+      document.createElement("script");
+
+
+    script.id =
+      "absenApi";
+
+
+    script.src =
+
+      GAS_URL +
+
+      "?aksi=absen" +
+
+      "&kode=" +
+      encodeURIComponent(kode) +
+
+      "&idPetugas=" +
+      encodeURIComponent(
+        petugas.idPetugas
+      ) +
+
+      "&latitude=" +
+      encodeURIComponent(lokasi.latitude) +
+
+      "&longitude=" +
+      encodeURIComponent(lokasi.longitude) +
+
+      "&accuracy=" +
+      encodeURIComponent(lokasi.accuracy || "") +
+
+      "&callback=" +
+      callbackName;
+
+
+    document.body.appendChild(script);
+
+  }
+
+
+  // =====================================================
+  // TAMPILKAN MENU MANUAL
+  // =====================================================
+
+  function tampilkanManual() {
+    if (!isAppOnline()) { alert("Fitur ini membutuhkan koneksi internet."); return; }
+
+    document.documentElement.classList.add("manual-mode");
+
+    if (scannerAktif) {
+
+      scannerAktif
+        .clear()
+        .catch(
+          function() {}
+        );
+
+      scannerAktif = null;
+
+    }
+
+
+    document
+      .getElementById("reader")
+      .innerHTML =
+        "";
+
+
+    document
+      .getElementById("scannerArea")
+      .style.display =
+        "none";
+
+
+    document
+      .getElementById("manualArea")
+      .style.display =
+        "block";
+
+
+    document
+      .getElementById("manualPetugas")
+      .innerHTML =
+
+        "<b>Petugas:</b> " +
+        petugas.nama +
+
+        "<br>" +
+
+        "<b>ID:</b> " +
+        petugas.idPetugas;
+
+
+    document
+      .getElementById("manualHasil")
+      .innerHTML =
+        "";
+
+  }
+
+
+  // =====================================================
+  // SIMPAN ABSEN MANUAL
+  // =====================================================
+
+  function simpanManual(status) {
+
+    if (!petugas) {
+
+      document
+        .getElementById("manualHasil")
+        .innerHTML =
+          "❌ Petugas belum login.";
+
+      return;
+
+    }
+
+
+    const kode =
+      document
+        .getElementById("manualKode")
+        .value
+        .trim();
+
+
+    const keterangan =
+      document
+        .getElementById(
+          "manualKeterangan"
+        )
+        .value
+        .trim();
+
+
+    if (!kode) {
+
+      document
+        .getElementById("manualHasil")
+        .innerHTML =
+
+          "⚠️ Pilih siswa terlebih dahulu.";
+
+      return;
+
+    }
+
+
+    document
+      .getElementById("manualHasil")
+      .innerHTML =
+        "Menyimpan...";
+
+
+    const callbackName =
+      "manualCallback" + Date.now();
+
+
+    window[callbackName] =
+      function(data) {
+
+        if (
+          data &&
+          data.berhasil === true
+        ) {
+
+          document
+            .getElementById("manualHasil")
+            .innerHTML =
+
+              "<b>✓ BERHASIL</b>" +
+
+              "<br><br>" +
+
+              "Siswa: <b>" +
+              (data.nama || "") +
+              "</b>" +
+
+              "<br>" +
+
+              "ID: " +
+              (data.idSiswa || "") +
+
+              "<br>" +
+
+              "Mode: " +
+              (data.mode || "") +
+
+              "<br>" +
+
+              "Status: <b>" +
+              (data.status || "") +
+              "</b>" +
+
+              "<br>" +
+
+              "Petugas: " +
+              (data.idPetugas || "");
+
+          document
+            .getElementById("manualKode")
+            .value =
+              "";
+
+          document
+            .getElementById("manualCari")
+            .value =
+              "";
+
+          document
+            .getElementById(
+              "hasilPencarianManual"
+            )
+            .innerHTML =
+              "";
+
+          document
+            .getElementById(
+              "manualKeterangan"
+            )
+            .value =
+              "";
+
+        } else {
+
+          document
+            .getElementById("manualHasil")
+            .innerHTML =
+
+              "<b>❌ GAGAL</b>" +
+
+              "<br><br>" +
+
+              (
+                data &&
+                data.pesan
+                  ? data.pesan
+                  : "Terjadi kesalahan."
+              );
+
+        }
+
+
+        bersihkanCallback(
+          "manualApi",
+          callbackName
+        );
+
+      };
+
+
+    const script =
+      document.createElement("script");
+
+
+    script.id =
+      "manualApi";
+
+
+    script.src =
+
+      GAS_URL +
+
+      "?aksi=manual" +
+
+      "&kode=" +
+      encodeURIComponent(kode) +
+
+      "&status=" +
+      encodeURIComponent(status) +
+
+      "&idPetugas=" +
+      encodeURIComponent(
+        petugas.idPetugas
+      ) +
+
+      "&keterangan=" +
+      encodeURIComponent(keterangan) +
+
+      "&callback=" +
+      callbackName;
+
+
+    document.body.appendChild(script);
+
+  }
+
+
+  // =====================================================
+  // TINDAK LANJUT
+  // Dibuka sebagai halaman terpisah agar tidak mengganggu Index.
+  // =====================================================
+
+  function bukaTindakLanjut() {
+    if (!isAppOnline()) { alert("Fitur ini membutuhkan koneksi internet."); return; }
+
+    if (!petugas) {
+      alert("Silakan login terlebih dahulu.");
+      return;
+    }
+
+    // Hentikan scanner sebelum berganti tampilan.
+    if (scannerAktif) {
+      try { scannerAktif.clear().catch(function() {}); } catch (e) {}
+      scannerAktif = null;
+    }
+    scannerSedangDibuat = false;
+
+    const scannerArea = document.getElementById("scannerArea");
+    const page = document.getElementById("tindakLanjutPage");
+    const area = document.getElementById("tindakLanjutPageContent");
+
+    if (!page || !area) {
+      alert("Halaman Tindak Lanjut belum tersedia di Index.");
+      return;
+    }
+
+    closeMenu();
+
+    ["petugasInfo","statusHariIni","menuArea","reader","hasil","manualArea"]
+      .forEach(function(id) {
+        const el = document.getElementById(id);
+        if (el) el.style.display = "none";
+      });
+
+    const logout = document.querySelector(".scanner-logout-button");
+    if (logout) logout.style.display = "none";
+
+    if (scannerArea) scannerArea.style.display = "block";
+    page.style.display = "block";
+
+    area.innerHTML = "<div class='info'>Memuat data tindak lanjut...</div>";
+
+
+    area.innerHTML =
+      "<div class='info'>" +
+      "Memuat data tindak lanjut..." +
+      "</div>";
+
+
+    const callbackName =
+      "tindakLanjutCallback" + Date.now();
+
+
+    window[callbackName] =
+      function(data) {
+
+        if (
+          !data ||
+          data.berhasil !== true
+        ) {
+
+          area.innerHTML =
+
+            "<div class='info'>" +
+
+            "❌ Gagal mengambil data tindak lanjut." +
+
+            "<br><br>" +
+
+            (
+              data &&
+              data.pesan
+                ? data.pesan
+                : "Tidak ada respons dari server."
+            ) +
+
+            "</div>";
+
+
+          bersihkanCallback(
+            "tindakLanjutApi",
+            callbackName
+          );
+
+          return;
+
+        }
+
+
+        if (
+          Number(data.jumlah) === 0
+        ) {
+
+          area.innerHTML =
+
+            "<div class='info'>" +
+
+            "✅ Tidak ada siswa yang perlu " +
+            "ditindaklanjuti." +
+
+            "</div>";
+
+        } else {
+
+          let html =
+
+            "<h3>⚠️ Perlu Tindak Lanjut</h3>";
+
+
+          if (
+            Array.isArray(data.data)
+          ) {
+
+            data.data.forEach(
+              function(item) {
+
+                html +=
+
+                  "<div class='tindak-card'>" +
+
+                  "<strong>" +
+                  (item.idSiswa || "") +
+                  " - " +
+                  (item.nama || "") +
+                  "</strong>" +
+
+                  "<br><br>" +
+
+                  "Kelas: " +
+                  (item.kelas || "") +
+
+                  "<br>" +
+
+                  "ALPA: <strong>" +
+                  (item.jumlahAlpa || 0) +
+                  " kali</strong>" +
+
+                  "<br>" +
+
+                  "Terlambat: <strong>" +
+                  (item.jumlahTerlambat || 0) +
+                  " kali</strong>" +
+
+                  "<br>" +
+
+                  "Bolos: <strong>" +
+                  (item.jumlahBolos || 0) +
+                  " kali</strong>" +
+
+                  "<br>" +
+
+                  "Sakit: " +
+                  (item.jumlahSakit || 0) +
+                  " kali" +
+
+                  "<br>" +
+
+                  "Izin: " +
+                  (item.jumlahIzin || 0) +
+                  " kali" +
+
+                  "<br>" +
+
+                  "Tanggal terakhir: " +
+                  (item.tanggal || "-") +
+
+                  "<br>" +
+
+                  "Status terakhir: <strong>" +
+                  (item.status || "-") +
+                  "</strong>" +
+
+                  "<br><br>" +
+
+                  "<button " +
+                  "type='button' " +
+                  "class='tindak-button' " +
+                  "onclick=\"tindaklanjutiSiswa('" +
+                  String(item.idSiswa || "")
+                    .replace(/\\/g, "\\\\")
+                    .replace(/'/g, "\\'") +
+                  "')\">" +
+                  "✓ SUDAH DITINDAKLANJUTI" +
+                  "</button>" +
+
+                  "</div>";
+
+              }
+            );
+
+          }
+
+
+          area.innerHTML =
+            html;
+
+        }
+
+
+        bersihkanCallback(
+          "tindakLanjutApi",
+          callbackName
+        );
+
+      };
+
+
+    const script =
+      document.createElement("script");
+
+
+    script.id =
+      "tindakLanjutApi";
+
+
+    script.src =
+
+      GAS_URL +
+
+      "?aksi=tindakLanjut" +
+
+      "&callback=" +
+      callbackName;
+
+
+    document.body.appendChild(script);
+
+  }
+
+  // =====================================================
+  // SIMPAN TINDAK LANJUT
+  // =====================================================
+
+  function tindaklanjutiSiswa(idSiswa) {
+
+    if (!petugas) {
+
+      alert(
+        "Petugas belum login."
+      );
+
+      return;
+
+    }
+
+
+    const catatan =
+      prompt(
+        "Catatan tindak lanjut (opsional):"
+      );
+
+
+    if (catatan === null) {
+
+      return;
+
+    }
+
+
+    const area =
+      document.getElementById(
+        "tindakLanjutPageContent"
+      );
+
+
+    area.innerHTML =
+      "<div class='info'>" +
+      "⏳ Menyimpan tindak lanjut..." +
+      "</div>";
+
+
+    const callbackName =
+      "simpanTindakLanjutCallback" +
+      Date.now();
+
+
+    window[callbackName] =
+      function(data) {
+
+        if (
+          data &&
+          data.berhasil === true
+        ) {
+
+          area.innerHTML =
+
+            "<div class='info'>" +
+
+            "✅ <b>Tindak lanjut berhasil disimpan.</b>" +
+
+            "<br><br>" +
+
+            "ID Siswa: " +
+            (data.idSiswa || idSiswa) +
+
+            "<br>" +
+
+            "Petugas: " +
+            (data.idPetugas || petugas.idPetugas) +
+
+            "<br>" +
+
+            "Waktu: " +
+            (data.waktu || "-") +
+
+            "</div>";
+
+
+          setTimeout(
+            function() {
+
+              bukaTindakLanjut();
+
+            },
+            1500
+          );
+
+
+        } else {
+
+          area.innerHTML =
+
+            "<div class='hasil'>" +
+
+            "❌ <b>Gagal menyimpan.</b>" +
+
+            "<br><br>" +
+
+            (
+              data &&
+              data.pesan
+                ? data.pesan
+                : "Terjadi kesalahan."
+            ) +
+
+            "</div>";
+
+        }
+
+
+        bersihkanCallback(
+          "simpanTindakLanjutApi",
+          callbackName
+        );
+
+      };
+
+
+    const script =
+      document.createElement("script");
+
+
+    script.id =
+      "simpanTindakLanjutApi";
+
+
+    script.src =
+
+      GAS_URL +
+
+      "?aksi=simpanTindakLanjut" +
+
+      "&idSiswa=" +
+      encodeURIComponent(idSiswa) +
+
+      "&idPetugas=" +
+      encodeURIComponent(
+        petugas.idPetugas
+      ) +
+
+      "&catatan=" +
+      encodeURIComponent(catatan) +
+
+      "&callback=" +
+      callbackName;
+
+
+    document.body.appendChild(
+      script
+    );
+
+  }
+
+
+
+  // =====================================================
+  // BUKA DASHBOARD
+  // =====================================================
+
+  function bukaDashboard() {
+    if (!isAppOnline()) { alert("Fitur ini membutuhkan koneksi internet."); return; }
+    /*
+     * Dashboard disajikan oleh Web App Google Apps Script.
+     * Parameter halaman dipakai oleh doGet(e) di Code.gs.
+     */
+    const url =
+      GAS_URL +
+      "?halaman=dashboard";
+
+    window.open(url, "_blank");
+  }
+
+  function bukaDashboardHarian() {
+    if (!isAppOnline()) { alert("Fitur ini membutuhkan koneksi internet."); return; }
+      /*
+       * Mode Pagi/Siang dipilih langsung di dalam
+       * Dashboard Harian, di samping pilihan tanggal.
+       */
+      const url =
+        GAS_URL +
+        "?halaman=dashboardHarian";
+
+      closeMenu();
+      window.open(url, "_blank");
+    }
+
+
+  // =====================================================
+  // KARTU QR CODE + LAPORAN
+  // =====================================================
+
+  function bukaKartuQRCode() {
+    if (!isAppOnline()) { alert("Fitur ini membutuhkan koneksi internet."); return; }
+    if (!petugas) {
+      alert("Silakan login terlebih dahulu.");
+      return;
+    }
+
+    const url = GAS_URL + "?halaman=kartuQr";
+    closeMenu();
+    window.open(url, "_blank");
+  }
+
+  function bukaLaporan() {
+    if (!isAppOnline()) { alert("Fitur ini membutuhkan koneksi internet."); return; }
+    if (!petugas) {
+      alert("Silakan login terlebih dahulu.");
+      return;
+    }
+
+    const url = GAS_URL + "?halaman=laporan";
+    closeMenu();
+    window.open(url, "_blank");
+  }
+
+
+  // =====================================================
+  // PENGATURAN HARI LIBUR
+  // =====================================================
+
+  function tanggalHariIniLocal() {
+    const sekarang = new Date();
+    const tahun = sekarang.getFullYear();
+    const bulan = String(sekarang.getMonth() + 1).padStart(2, "0");
+    const tanggal = String(sekarang.getDate()).padStart(2, "0");
+    return tahun + "-" + bulan + "-" + tanggal;
+  }
+
+  function escapeHtmlLibur(teks) {
+    return String(teks == null ? "" : teks)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  function bukaPengaturanLibur() {
+    if (!isAppOnline()) { alert("Fitur ini membutuhkan koneksi internet."); return; }
+    if (!petugas) {
+      alert("Silakan login terlebih dahulu.");
+      return;
+    }
+
+    const area = document.getElementById("liburArea");
+
+    area.style.display = "block";
+
+    area.innerHTML =
+      "<h3>📅 Pengaturan Hari</h3>" +
+      "<p>Sabtu tetap dihitung sebagai hari sekolah. Hanya Minggu yang otomatis hari libur.</p>" +
+
+      "<label><b>Tanggal</b></label>" +
+      "<input type='date' id='tanggalLibur' value='" +
+      tanggalHariIniLocal() +
+      "' onchange='cekStatusLibur()'>" +
+
+      "<div id='statusLibur' class='libur-status'>" +
+      "Memeriksa status tanggal..." +
+      "</div>" +
+
+      "<label><b>Keterangan</b></label>" +
+      "<textarea id='keteranganLibur' placeholder='Contoh: HUT Kemerdekaan RI, kegiatan sekolah, libur khusus, dll.'></textarea>" +
+
+      "<button type='button' class='libur-simpan' onclick='simpanHariLibur()'>" +
+      "🔴 JADIKAN HARI LIBUR" +
+      "</button>" +
+
+      "<button type='button' class='libur-batal' onclick='tutupPengaturanLibur()'>" +
+      "✕ TUTUP" +
+      "</button>";
+
+    cekStatusLibur();
+  }
+
+  function tutupPengaturanLibur() {
+    const area = document.getElementById("liburArea");
+    area.innerHTML = "";
+    area.style.display = "none";
+  }
+
+  function cekStatusLibur() {
+    const tanggal =
+      document.getElementById("tanggalLibur") &&
+      document.getElementById("tanggalLibur").value;
+
+    const status =
+      document.getElementById("statusLibur");
+
+    if (!tanggal || !status) {
+      return;
+    }
+
+    status.className = "libur-status";
+    status.innerHTML = "⏳ Memeriksa status hari...";
+
+    const callbackName =
+      "cekLiburCallback" + Date.now();
+
+    window[callbackName] = function(data) {
+      if (!data || data.berhasil !== true) {
+        status.className = "libur-status";
+        status.innerHTML =
+          "❌ " +
+          (
+            data && data.pesan
+              ? escapeHtmlLibur(data.pesan)
+              : "Status hari belum dapat diperiksa."
+          );
+
+        bersihkanCallback(
+          "cekLiburApi",
+          callbackName
+        );
+        return;
+      }
+
+      const hari =
+        data.hari ||
+        "";
+
+      const isLibur =
+        data.libur === true ||
+        String(data.status || "").toUpperCase() === "LIBUR";
+
+      const keterangan =
+        data.keterangan ||
+        "";
+
+      document.getElementById("keteranganLibur").value =
+        keterangan;
+
+      if (isLibur) {
+        status.className = "libur-status libur";
+
+        status.innerHTML =
+          "🔴 <b>LIBUR</b>" +
+          "<br>" +
+          escapeHtmlLibur(hari) +
+          "<br>" +
+          "Keterangan: " +
+          escapeHtmlLibur(keterangan || "-");
+      } else {
+        status.className = "libur-status sekolah";
+
+        status.innerHTML =
+          "🟢 <b>HARI SEKOLAH</b>" +
+          "<br>" +
+          escapeHtmlLibur(hari) +
+          "<br>" +
+          "Tanggal ini masih dianggap hari sekolah.";
+      }
+
+      bersihkanCallback(
+        "cekLiburApi",
+        callbackName
+      );
+    };
+
+    const script = document.createElement("script");
+
+    script.id = "cekLiburApi";
+
+    script.src =
+      GAS_URL +
+      "?aksi=cekLibur" +
+      "&tanggal=" +
+      encodeURIComponent(tanggal) +
+      "&callback=" +
+      callbackName;
+
+    document.body.appendChild(script);
+  }
+
+  function simpanHariLibur() {
+    if (!petugas) {
+      alert("Petugas belum login.");
+      return;
+    }
+
+    const tanggal =
+      document.getElementById("tanggalLibur").value;
+
+    const keterangan =
+      document.getElementById("keteranganLibur").value.trim();
+
+    const status =
+      document.getElementById("statusLibur");
+
+    if (!tanggal) {
+      status.className = "libur-status";
+      status.innerHTML =
+        "⚠️ Pilih tanggal terlebih dahulu.";
+      return;
+    }
+
+    if (!keterangan) {
+      status.className = "libur-status";
+      status.innerHTML =
+        "⚠️ Keterangan hari libur wajib diisi.";
+      return;
+    }
+
+    status.className = "libur-status";
+    status.innerHTML =
+      "⏳ Menyimpan pengaturan hari libur...";
+
+    const callbackName =
+      "simpanLiburCallback" + Date.now();
+
+    window[callbackName] = function(data) {
+      if (data && data.berhasil === true) {
+        status.className = "libur-status libur";
+
+        status.innerHTML =
+          "✅ <b>Hari berhasil ditetapkan sebagai LIBUR.</b>" +
+          "<br><br>" +
+          "Tanggal: " +
+          escapeHtmlLibur(data.tanggal || tanggal) +
+          "<br>" +
+          "Keterangan: " +
+          escapeHtmlLibur(
+            data.keterangan || keterangan
+          );
+
+      } else {
+        status.className = "libur-status";
+
+        status.innerHTML =
+          "❌ <b>Gagal menyimpan.</b>" +
+          "<br><br>" +
+          (
+            data && data.pesan
+              ? escapeHtmlLibur(data.pesan)
+              : "Terjadi kesalahan."
+          );
+      }
+
+      bersihkanCallback(
+        "simpanLiburApi",
+        callbackName
+      );
+    };
+
+    const script =
+      document.createElement("script");
+
+    script.id = "simpanLiburApi";
+
+    script.src =
+      GAS_URL +
+      "?aksi=simpanLibur" +
+      "&tanggal=" +
+      encodeURIComponent(tanggal) +
+      "&keterangan=" +
+      encodeURIComponent(keterangan) +
+      "&idPetugas=" +
+      encodeURIComponent(
+        petugas.idPetugas
+      ) +
+      "&callback=" +
+      callbackName;
+
+    document.body.appendChild(script);
+  }
+
+  // =====================================================
+  // KEMBALI KE SCANNER
+  // =====================================================
+
+  function kembaliDariTindakLanjut() {
+
+    const page = document.getElementById("tindakLanjutPage");
+    if (page) page.style.display = "none";
+
+    [
+      "petugasInfo",
+      "statusHariIni",
+      "menuArea",
+      "reader",
+      "hasil"
+    ].forEach(function(id) {
+      const el = document.getElementById(id);
+      if (el) el.style.display = "";
+    });
+
+    const logout = document.querySelector(".scanner-logout-button");
+    if (logout) logout.style.display = "";
+
+    const manual = document.getElementById("manualArea");
+    if (manual) manual.style.display = "none";
+
+    document.documentElement.classList.remove("manual-mode");
+
+    const area = document.getElementById("tindakLanjutPageContent");
+    if (area) area.innerHTML = "<div class='info'>Siap.</div>";
+
+    closeMenu();
+  }
+
+
+  // =====================================================
+  // KEMBALI KE SCANNER
+  // =====================================================
+
+  function kembaliKeScanner() {
+
+    document.documentElement.classList.remove("manual-mode");
+
+    document
+      .getElementById("manualArea")
+      .style.display =
+        "none";
+
+
+    document
+      .getElementById("scannerArea")
+      .style.display =
+        "block";
+
+
+    document
+      .getElementById("manualHasil")
+      .innerHTML =
+        "";
+
+
+    mulaiScanner();
+
+  }
+
+
+</script>
+
+
+
+<div class="creator-footer">Dibuat dan dibagikan untuk <strong>kemanfaatan bersama</strong> • © 2026 <strong>Ajiardin</strong> • <button class="support-btn" onclick="openSupportModal()">❤️ Dukung Pengembangan</button></div>
+<div class="support-modal" id="creatorSupportModal" onclick="if(event.target===this)closeSupportModal()">
+  <div class="support-box">
+    <h3>❤️ Dukung Pengembangan</h3>
+    <p>Aplikasi ini dibagikan untuk membantu digitalisasi sekolah. Jika aplikasi ini bermanfaat dan Anda ingin memberikan apresiasi atau mendukung pengembangannya, dukungan dapat diberikan secara sukarela.</p>
+    <div class="support-item"><b>Bank BRI</b><span>488801018509539</span><br><small>Ajiardin</small></div>
+    <div class="support-item"><b>E-Wallet</b><span>085298875399</span><br><small>DANA • OVO • GoPay • ShopeePay • KasPro</small></div>
+    <p style="font-size:10px;color:#94a3b8;margin-bottom:0">Tidak ada kewajiban untuk memberikan dukungan. Terima kasih sudah menggunakan dan ikut menyebarkan manfaat.</p>
+    <div class="support-actions"><button class="support-close" onclick="closeSupportModal()">Tutup</button></div>
+  </div>
+</div>
+<script>function openSupportModal(){var e=document.getElementById('creatorSupportModal');if(e)e.classList.add('show')}function closeSupportModal(){var e=document.getElementById('creatorSupportModal');if(e)e.classList.remove('show')}document.addEventListener('keydown',function(e){if(e.key==='Escape')closeSupportModal()});</script>
+
+</body>
+
+</html>
