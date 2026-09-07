@@ -583,7 +583,7 @@ body{
   (function () {
     const params = new URLSearchParams(window.location.search);
     if (params.get("mode") === "scanner") {
-      document.title = "Scanner Offline-First Absensi";
+      document.title = "Scanner Absensi — SMK Negeri 1 Wakatobi";
     }
   })();
 </script>
@@ -2063,33 +2063,12 @@ html.scanner-mode #menuDrawer button{
 <style id="creator-support-style">
 .creator-footer{margin:18px auto 24px;max-width:1200px;padding:14px 20px;text-align:center;color:#64748b;font-size:11px;line-height:1.6}.creator-footer strong{color:#334155}.support-btn{border:0;background:none;color:#0b3b82;font-weight:800;cursor:pointer;padding:2px 4px}.support-modal{display:none;position:fixed;inset:0;background:#0f172a88;z-index:99999;align-items:center;justify-content:center;padding:18px}.support-modal.show{display:flex}.support-box{width:min(430px,100%);background:#fff;border-radius:18px;padding:22px;box-shadow:0 20px 60px #0004;text-align:left}.support-box h3{margin:0 0 7px;color:#0b3b82}.support-box p{font-size:12px;line-height:1.6;color:#475569}.support-item{background:#f8fafc;border:1px solid #e2e8f0;border-radius:11px;padding:10px 12px;margin-top:9px}.support-item b{display:block;font-size:11px;color:#64748b;margin-bottom:3px}.support-item span{font-weight:800;color:#172033;word-break:break-word}.support-actions{text-align:right;margin-top:14px}.support-close{border:0;border-radius:9px;padding:9px 14px;background:#e2e8f0;color:#172033;font-weight:800;cursor:pointer}
 </style>
-
-<style id="offline-first-style">
-  #connectionStatus{display:flex;align-items:center;gap:9px;margin:0 0 14px;padding:9px 12px;border-radius:12px;font-size:12px;font-weight:800;border:1px solid #dbe4ee;background:#f8fafc;color:#334155}
-  #connectionStatus .dot{width:11px;height:11px;border-radius:50%;background:#94a3b8;flex:0 0 11px}
-  #connectionStatus.online .dot{background:#16a34a;box-shadow:0 0 0 4px #16a34a22}
-  #connectionStatus.offline .dot{background:#94a3b8}
-  #connectionStatus.syncing .dot{background:#f59e0b;box-shadow:0 0 0 4px #f59e0b22}
-  #offlineQueueInfo{font-size:11px;font-weight:700;color:#64748b;margin:-7px 0 12px;display:none}
-  html.offline-mode .offline-hide{display:none!important}
-  html.offline-mode .admin-login-button{display:none!important}
-  html.offline-mode #loginArea{display:none!important}
-  html.offline-mode #scannerArea{display:block!important}
-  html.offline-mode .scanner-logout-button{display:none!important}
-  html.online-mode #offlineQueueInfo{display:block}
-</style>
-
 </head>
 
 
 <body>
 
 <div class="container">
-
-  <div id="connectionStatus" class="offline" role="status" aria-live="polite">
-    <span class="dot"></span><span id="connectionStatusText">Memeriksa koneksi...</span>
-  </div>
-  <div id="offlineQueueInfo"></div>
 
 
   <!-- ================================================= -->
@@ -2202,21 +2181,21 @@ html.scanner-mode #menuDrawer button{
 
         <button
           type="button"
-          onclick="tampilkanManual(); closeMenu();" class="offline-hide"
+          onclick="tampilkanManual(); closeMenu();"
         >
           📝 &nbsp; ABSEN MANUAL
         </button>
 
         <button
           type="button"
-          onclick="bukaTindakLanjut(); closeMenu();" class="offline-hide"
+          onclick="bukaTindakLanjut(); closeMenu();"
         >
           ⚠️ &nbsp; TINDAK LANJUT
         </button>
 
         <button
           type="button"
-          class="dashboard-button offline-hide"
+          class="dashboard-button"
           onclick="bukaDashboard(); closeMenu();"
         >
           📊 &nbsp; DASHBOARD
@@ -2224,7 +2203,7 @@ html.scanner-mode #menuDrawer button{
 
         <button
           type="button"
-          class="dashboard-harian-menu dashboard-harian-single offline-hide"
+          class="dashboard-harian-menu dashboard-harian-single"
           onclick="bukaDashboardHarian();"
         >
           📅 &nbsp; DASHBOARD HARIAN
@@ -2232,7 +2211,7 @@ html.scanner-mode #menuDrawer button{
 
         <button
           type="button"
-          class="libur-button offline-hide"
+          class="libur-button"
           onclick="bukaPengaturanLibur();"
         >
           🗓️ &nbsp; HARI LIBUR / SEKOLAH
@@ -2240,7 +2219,7 @@ html.scanner-mode #menuDrawer button{
 
         <button
           type="button"
-          class="qr-button offline-hide"
+          class="qr-button"
           onclick="bukaKartuQRCode(); closeMenu();"
         >
           🪪 &nbsp; KARTU QR CODE
@@ -2248,7 +2227,7 @@ html.scanner-mode #menuDrawer button{
 
         <button
           type="button"
-          class="laporan-button offline-hide"
+          class="laporan-button"
           onclick="bukaLaporan(); closeMenu();"
         >
           📄 &nbsp; LAPORAN
@@ -2511,10 +2490,10 @@ html.scanner-mode #menuDrawer button{
   // URL WEB APP GOOGLE APPS SCRIPT
   // =====================================================
 
-  const GAS_URL = "https://script.google.com/macros/s/AKfycby-YKShDHh90IuYDeODd0OAIFUQy-Hk3DiEkyMXtx5Y465lA4C1fpmN4qYjgQgKDTKO/exec";
+  const GAS_URL =
+    "https://script.google.com/macros/s/AKfycbxSXinXPPm7qIl_5J99eMKfsHEo-nCZ8MWI-KNt0KsnR4W7mTL-uE4dagGneVg3c_aX/exec";
 
   function bukaAdmin() {
-    if (!isAppOnline()) { alert("Fitur ini membutuhkan koneksi internet."); return; }
     try { localStorage.setItem("absensiHalamanAwal", window.location.href); } catch(e) {}
     const kembali = encodeURIComponent(window.location.href);
     window.open(GAS_URL + "?halaman=admin&kembali=" + kembali, "_blank");
@@ -2790,257 +2769,11 @@ html.scanner-mode #menuDrawer button{
   // =====================================================
 
   document.addEventListener("DOMContentLoaded", function() {
-    registerOfflineFirst();
     muatIdentitasSekolah();
     initModeScanner();
     tungguLoginDiTabScanner();
-    updateConnectionUI();
-    if (navigator.onLine) {
-      cekKoneksiServer();
-    }
   });
 
-
-  // =====================================================
-  // OFFLINE-FIRST ENGINE
-  // =====================================================
-  const OFFLINE_DB_NAME = "absensi-offline-first-v1";
-  const OFFLINE_DB_VERSION = 1;
-  const OFFLINE_MASTER_KEY = "MASTER_SISWA";
-  const OFFLINE_PENDING_STORE = "PENDING";
-  let offlineDbPromise = null;
-  let offlineSyncRunning = false;
-  let serverOnline = null;
-  function isAppOnline(){ return navigator.onLine && serverOnline !== false; }
-
-  function registerOfflineFirst() {
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("./sw.js").catch(function(err){
-        console.warn("Service Worker gagal didaftarkan:", err);
-      });
-    }
-    window.addEventListener("online", function(){
-      serverOnline = null;
-      updateConnectionUI();
-      cekKoneksiServer();
-    });
-    window.addEventListener("offline", function(){
-      serverOnline = false;
-      updateConnectionUI();
-    });
-  }
-
-  function updateConnectionUI() {
-    const root = document.documentElement;
-    const bar = document.getElementById("connectionStatus");
-    const text = document.getElementById("connectionStatusText");
-    const online = isAppOnline();
-    root.classList.toggle("offline-mode", !online);
-    root.classList.toggle("online-mode", online);
-    if (bar) {
-      bar.classList.remove("online","offline","syncing");
-      bar.classList.add(online ? "online" : "offline");
-    }
-    if (text) text.textContent = online ? "ONLINE — fitur administrasi tersedia" : "OFFLINE — hanya Scan QR yang tersedia";
-
-    if (!online) {
-      const scanner = document.getElementById("scannerArea");
-      const login = document.getElementById("loginArea");
-      if (scanner) scanner.style.display = "block";
-      if (login) login.style.display = "none";
-      const info = document.getElementById("petugasInfo");
-      if (info) info.innerHTML = "<b>Mode:</b> Offline — scan tanpa login. Data disimpan di perangkat dan akan disinkronkan saat online.";
-      setTimeout(function(){ if (!scannerAktif) mulaiScanner(); }, 300);
-    } else if (!petugas && new URLSearchParams(window.location.search).get("mode") !== "scanner") {
-      const scanner = document.getElementById("scannerArea");
-      const login = document.getElementById("loginArea");
-      if (scanner) scanner.style.display = "none";
-      if (login) login.style.display = "";
-    }
-    updateOfflineQueueInfo();
-  }
-
-  function cekKoneksiServer(){
-    if (!navigator.onLine) { serverOnline=false; updateConnectionUI(); return; }
-    serverOnline=null;
-    const bar=document.getElementById("connectionStatus"), text=document.getElementById("connectionStatusText");
-    if(bar){bar.classList.remove("online","offline");bar.classList.add("syncing");}
-    if(text) text.textContent="MEMERIKSA KONEKSI SERVER...";
-    jsonpRequest("schoolSettings", {}, 7000).then(function(data){
-      serverOnline=!!(data && data.berhasil);
-      if(serverOnline){ refreshMasterOffline(); syncPendingOffline(); }
-      updateConnectionUI();
-    }).catch(function(){
-      serverOnline=false;
-      updateConnectionUI();
-    });
-  }
-
-  function openOfflineDb() {
-    if (offlineDbPromise) return offlineDbPromise;
-    offlineDbPromise = new Promise(function(resolve, reject){
-      const req = indexedDB.open(OFFLINE_DB_NAME, OFFLINE_DB_VERSION);
-      req.onupgradeneeded = function(e){
-        const db = e.target.result;
-        if (!db.objectStoreNames.contains("MASTER")) db.createObjectStore("MASTER");
-        if (!db.objectStoreNames.contains(OFFLINE_PENDING_STORE)) db.createObjectStore(OFFLINE_PENDING_STORE, {keyPath:"transactionId"});
-      };
-      req.onsuccess = function(){ resolve(req.result); };
-      req.onerror = function(){ reject(req.error); };
-    });
-    return offlineDbPromise;
-  }
-
-  function idbPut(storeName, key, value) {
-    return openOfflineDb().then(function(db){
-      return new Promise(function(resolve,reject){
-        const tx=db.transaction(storeName,"readwrite");
-        tx.objectStore(storeName).put(value,key);
-        tx.oncomplete=function(){resolve(true)};
-        tx.onerror=function(){reject(tx.error)};
-      });
-    });
-  }
-
-  function idbGet(storeName, key) {
-    return openOfflineDb().then(function(db){
-      return new Promise(function(resolve,reject){
-        const tx=db.transaction(storeName,"readonly");
-        const req=tx.objectStore(storeName).get(key);
-        req.onsuccess=function(){resolve(req.result)};
-        req.onerror=function(){reject(req.error)};
-      });
-    });
-  }
-
-  function idbGetAll(storeName) {
-    return openOfflineDb().then(function(db){
-      return new Promise(function(resolve,reject){
-        const tx=db.transaction(storeName,"readonly");
-        const req=tx.objectStore(storeName).getAll();
-        req.onsuccess=function(){resolve(req.result||[])};
-        req.onerror=function(){reject(req.error)};
-      });
-    });
-  }
-
-  function idbDelete(storeName,key) {
-    return openOfflineDb().then(function(db){
-      return new Promise(function(resolve,reject){
-        const tx=db.transaction(storeName,"readwrite");
-        tx.objectStore(storeName).delete(key);
-        tx.oncomplete=function(){resolve(true)};
-        tx.onerror=function(){reject(tx.error)};
-      });
-    });
-  }
-
-  function jsonpRequest(action, params, timeoutMs) {
-    return new Promise(function(resolve,reject){
-      if (!GAS_URL || GAS_URL.indexOf("TEMPEL_URL") === 0) return reject(new Error("URL Web App GAS belum diatur."));
-      const cb = "offlineFirstCb" + Date.now() + Math.floor(Math.random()*10000);
-      let timer;
-      window[cb]=function(data){ clearTimeout(timer); delete window[cb]; const old=document.getElementById(cb); if(old) old.remove(); resolve(data); };
-      const script=document.createElement("script"); script.id=cb;
-      let q="?aksi="+encodeURIComponent(action)+"&callback="+encodeURIComponent(cb);
-      Object.keys(params||{}).forEach(function(k){ q += "&"+encodeURIComponent(k)+"="+encodeURIComponent(params[k]==null?"":params[k]); });
-      script.src=GAS_URL+q;
-      script.onerror=function(){ clearTimeout(timer); delete window[cb]; script.remove(); reject(new Error("Server tidak dapat dihubungi.")); };
-      timer=setTimeout(function(){ delete window[cb]; script.remove(); reject(new Error("Waktu koneksi habis.")); }, timeoutMs||8000);
-      document.body.appendChild(script);
-    });
-  }
-
-  function refreshMasterOffline() {
-    if (!navigator.onLine) return;
-    jsonpRequest("getMasterSiswa", {}, 10000).then(function(data){
-      if (data && data.berhasil && Array.isArray(data.students)) {
-        return idbPut("MASTER", OFFLINE_MASTER_KEY, data.students).then(function(){ updateOfflineQueueInfo(); });
-      }
-    }).catch(function(err){ console.warn("Master offline belum diperbarui:",err.message); });
-  }
-
-  function cariMasterOffline(kode) {
-    return idbGet("MASTER", OFFLINE_MASTER_KEY).then(function(list){
-      list=Array.isArray(list)?list:[];
-      const k=String(kode||"").trim();
-      return list.find(function(s){
-        return String(s.barcode||"").trim()===k || (!s.barcode && String(s.idSiswa||"").trim()===k);
-      }) || null;
-    });
-  }
-
-  function simpanScanOffline(kode,lokasi) {
-    const hasil=document.getElementById("hasil");
-    const waktu=new Date().toISOString();
-    cariMasterOffline(kode).then(function(siswa){
-      if (!siswa) {
-        hasil.innerHTML="<b>❌ SISWA TIDAK DITEMUKAN</b><br><br>Kode: <b>"+escapeHtmlLogin(kode)+"</b><br><small>Pastikan master siswa sudah pernah disinkronkan saat online.</small>";
-        setTimeout(mulaiScanner,3000); return;
-      }
-      return idbGetAll(OFFLINE_PENDING_STORE).then(function(items){
-        const dup=items.some(function(x){ return x.idSiswa===siswa.idSiswa && x.mode===modeOfflineFromTime(waktu) && x.tanggal===waktu.slice(0,10); });
-        if(dup){
-          hasil.innerHTML="<b>⚠️ SUDAH TERCATAT OFFLINE</b><br><br>"+escapeHtmlLogin(siswa.nama)+"<br><small>Transaksi masih menunggu sinkronisasi.</small>";
-          setTimeout(mulaiScanner,3000); return;
-        }
-        const tx={
-          transactionId:"OFF-"+Date.now()+"-"+Math.random().toString(36).slice(2,8),
-          waktu:waktu, tanggal:waktu.slice(0,10), kode:kode,
-          idSiswa:siswa.idSiswa, idPetugas:petugas ? petugas.idPetugas : "OFFLINE_DEVICE",
-          lokasi:{latitude:Number(lokasi.latitude),longitude:Number(lokasi.longitude),accuracy:Number(lokasi.accuracy||0)},
-          mode:modeOfflineFromTime(waktu), status:"PENDING"
-        };
-        return idbPut(OFFLINE_PENDING_STORE,tx.transactionId,tx).then(function(){
-          hasil.innerHTML="<b>✓ ABSENSI TERSIMPAN OFFLINE</b><br><br><strong>"+escapeHtmlLogin(siswa.nama)+"</strong><br>ID: "+escapeHtmlLogin(siswa.idSiswa)+"<br>Kelas: "+escapeHtmlLogin(siswa.kelas||"")+"<br><br>📦 Menunggu sinkronisasi internet.";
-          updateOfflineQueueInfo();
-          setTimeout(mulaiScanner,3000);
-        });
-      });
-    }).catch(function(err){
-      hasil.innerHTML="❌ Gagal menyimpan offline: "+escapeHtmlLogin(err.message);
-      setTimeout(mulaiScanner,3500);
-    });
-  }
-
-  function modeOfflineFromTime(iso) {
-    const d=new Date(iso), h=d.getHours(), m=d.getMinutes(), menit=h*60+m;
-    // Rentang default; server akan menjadi sumber aturan final saat sinkronisasi.
-    return menit < 11*60 ? "PAGI" : "SIANG";
-  }
-
-  function syncPendingOffline() {
-    if (!navigator.onLine || offlineSyncRunning) return;
-    if (!GAS_URL || GAS_URL.indexOf("TEMPEL_URL") === 0) return;
-    offlineSyncRunning=true;
-    updateOfflineQueueInfo(true);
-    idbGetAll(OFFLINE_PENDING_STORE).then(function(items){
-      if (!items.length) { offlineSyncRunning=false; updateConnectionUI(); return; }
-      let chain=Promise.resolve();
-      items.forEach(function(tx){
-        chain=chain.then(function(){
-          return jsonpRequest("syncOfflineBatch", {payload:JSON.stringify([tx])}, 15000).then(function(res){
-            if (res && res.berhasil && res.results && res.results[0] && (res.results[0].berhasil || res.results[0].sudahAbsen)) {
-              return idbDelete(OFFLINE_PENDING_STORE,tx.transactionId);
-            }
-            throw new Error((res && res.pesan) || "Sinkronisasi ditolak server.");
-          });
-        });
-      });
-      return chain;
-    }).then(function(){ offlineSyncRunning=false; updateConnectionUI(); })
-      .catch(function(err){ offlineSyncRunning=false; console.warn("Sinkronisasi tertunda:",err.message); updateOfflineQueueInfo(false); });
-  }
-
-  function updateOfflineQueueInfo(syncing) {
-    const el=document.getElementById("offlineQueueInfo"); if(!el) return;
-    idbGetAll(OFFLINE_PENDING_STORE).then(function(items){
-      const n=items.length;
-      if (syncing && n) { el.textContent="🟠 Menyinkronkan "+n+" data absensi..."; el.style.display="block"; return; }
-      el.textContent=n ? "📦 "+n+" data absensi menunggu sinkronisasi." : "✓ Semua data absensi sudah tersinkron.";
-      el.style.display="block";
-    }).catch(function(){ el.style.display="none"; });
-  }
 
   // =====================================================
   // STATUS HARI INI
@@ -3342,10 +3075,14 @@ html.scanner-mode #menuDrawer button{
     }
     scannerSedangDibuat = true;
 
-if (!petugas && isAppOnline()) {
-      alert("Silakan login terlebih dahulu.");
-      scannerSedangDibuat = false;
+if (!petugas) {
+
+      alert(
+        "Silakan login terlebih dahulu."
+      );
+
       return;
+
     }
 
 
@@ -3476,7 +3213,7 @@ if (!petugas && isAppOnline()) {
         "Mencatat kehadiran...";
 
 
-    ambilLokasiDanCatat(kode);
+    catatKehadiran(kode);
 
   }
 
@@ -3485,44 +3222,19 @@ if (!petugas && isAppOnline()) {
   // CATAT KEHADIRAN
   // =====================================================
 
-  function ambilLokasiDanCatat(kode) {
+  function catatKehadiran(kode) {
 
-    const hasil = document.getElementById("hasil");
+    if (!petugas) {
 
-    if (!navigator.geolocation) {
-      hasil.innerHTML = "❌ Perangkat/browser tidak mendukung lokasi GPS. Absensi tidak dapat dicatat.";
-      setTimeout(mulaiScanner, 3000);
+      document
+        .getElementById("hasil")
+        .innerHTML =
+          "❌ Petugas belum login.";
+
       return;
+
     }
 
-    hasil.innerHTML = "📍 Mengambil lokasi perangkat...";
-
-    navigator.geolocation.getCurrentPosition(
-      function(posisi) {
-        catatKehadiran(kode, {
-          latitude: posisi.coords.latitude,
-          longitude: posisi.coords.longitude,
-          accuracy: posisi.coords.accuracy
-        });
-      },
-      function(error) {
-        let pesan = "Lokasi tidak dapat diambil.";
-        if (error && error.code === 1) pesan = "Izin lokasi ditolak. Izinkan lokasi/GPS pada browser, lalu scan kembali.";
-        else if (error && error.code === 2) pesan = "Lokasi perangkat tidak tersedia. Aktifkan GPS/lokasi lalu coba lagi.";
-        else if (error && error.code === 3) pesan = "Pengambilan lokasi terlalu lama. Pastikan GPS aktif lalu coba lagi.";
-        hasil.innerHTML = "❌ " + pesan + "<br><small>Absensi tidak dicatat.</small>";
-        setTimeout(mulaiScanner, 3500);
-      },
-      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-    );
-  }
-
-  function catatKehadiran(kode, lokasi) {
-
-    if (!isAppOnline() || !petugas) {
-      simpanScanOffline(kode, lokasi);
-      return;
-    }
 
     const callbackName =
       "absenCallback" + Date.now();
@@ -3640,15 +3352,6 @@ if (!petugas && isAppOnline()) {
         petugas.idPetugas
       ) +
 
-      "&latitude=" +
-      encodeURIComponent(lokasi.latitude) +
-
-      "&longitude=" +
-      encodeURIComponent(lokasi.longitude) +
-
-      "&accuracy=" +
-      encodeURIComponent(lokasi.accuracy || "") +
-
       "&callback=" +
       callbackName;
 
@@ -3663,7 +3366,6 @@ if (!petugas && isAppOnline()) {
   // =====================================================
 
   function tampilkanManual() {
-    if (!isAppOnline()) { alert("Fitur ini membutuhkan koneksi internet."); return; }
 
     document.documentElement.classList.add("manual-mode");
 
@@ -3912,7 +3614,6 @@ if (!petugas && isAppOnline()) {
   // =====================================================
 
   function bukaTindakLanjut() {
-    if (!isAppOnline()) { alert("Fitur ini membutuhkan koneksi internet."); return; }
 
     if (!petugas) {
       alert("Silakan login terlebih dahulu.");
@@ -4299,7 +4000,6 @@ if (!petugas && isAppOnline()) {
   // =====================================================
 
   function bukaDashboard() {
-    if (!isAppOnline()) { alert("Fitur ini membutuhkan koneksi internet."); return; }
     /*
      * Dashboard disajikan oleh Web App Google Apps Script.
      * Parameter halaman dipakai oleh doGet(e) di Code.gs.
@@ -4312,7 +4012,6 @@ if (!petugas && isAppOnline()) {
   }
 
   function bukaDashboardHarian() {
-    if (!isAppOnline()) { alert("Fitur ini membutuhkan koneksi internet."); return; }
       /*
        * Mode Pagi/Siang dipilih langsung di dalam
        * Dashboard Harian, di samping pilihan tanggal.
@@ -4331,7 +4030,6 @@ if (!petugas && isAppOnline()) {
   // =====================================================
 
   function bukaKartuQRCode() {
-    if (!isAppOnline()) { alert("Fitur ini membutuhkan koneksi internet."); return; }
     if (!petugas) {
       alert("Silakan login terlebih dahulu.");
       return;
@@ -4343,7 +4041,6 @@ if (!petugas && isAppOnline()) {
   }
 
   function bukaLaporan() {
-    if (!isAppOnline()) { alert("Fitur ini membutuhkan koneksi internet."); return; }
     if (!petugas) {
       alert("Silakan login terlebih dahulu.");
       return;
@@ -4377,7 +4074,6 @@ if (!petugas && isAppOnline()) {
   }
 
   function bukaPengaturanLibur() {
-    if (!isAppOnline()) { alert("Fitur ini membutuhkan koneksi internet."); return; }
     if (!petugas) {
       alert("Silakan login terlebih dahulu.");
       return;
